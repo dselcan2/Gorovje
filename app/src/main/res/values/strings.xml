@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Gorovje</string>
+    <string name="title_activity_vse_gore">VseGore</string>
+    <string name="title_activity_tabbed">TabbedActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+</resources>
