@@ -1,5 +1,6 @@
 package com.example;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -12,12 +13,16 @@ public class DataAll {
     private ArrayList<User> uporabniki;
     private ArrayList<Pot> poti;
     private ArrayList<Koca> koce;
+    private ArrayList<ShraniPot> shranjenaPot;
+
+
 
     public DataAll(){
         gore = new ArrayList<>();
         uporabniki = new ArrayList<>();
         poti = new ArrayList<>();
         koce = new ArrayList<>();
+        shranjenaPot = new ArrayList<>();
     }
     //public com.example.Gora(String naziv, com.example.Point tocka, double visina, String opis)
     public Gora addGora(String naziv, Point tocka, double visina, String opis, String slika, int id){
@@ -44,6 +49,12 @@ public class DataAll {
         return tmp;
     }
 
+    public ShraniPot addShranjenaPot(ArrayList<Point> pot, String time, double length, double visina){
+        ShraniPot tmp = new ShraniPot(pot, time, length, visina);
+        shranjenaPot.add(tmp);
+        return tmp;
+    }
+
     public ArrayList<Gora> getGore() {
         return gore;
     }
@@ -58,6 +69,10 @@ public class DataAll {
 
     public ArrayList<Koca> getKoce() {
         return koce;
+    }
+
+    public ArrayList<ShraniPot> getShranjenaPot() {
+        return shranjenaPot;
     }
 
     @Override
@@ -120,6 +135,18 @@ public class DataAll {
         pot3.add(new Point(46.4486111,13.8119779));
         dat.addPot(1,pot3,5, "Ruski kriz - Spik");
         dat.addUser(1,"Denis","Selcan");
+        ArrayList<Point> pot = new ArrayList<>();
+        pot.add(new Point(46.5373304, 15.6004783));
+        pot.add(new Point(47.5373304, 16.6004783));
+        ArrayList<Point> pot_1 = new ArrayList<>();
+        pot.add(new Point(23.5373304, 32.6004783));
+        pot.add(new Point(12.5373304, 78.6004783));
+        ArrayList<Point> pot_2 = new ArrayList<>();
+        pot.add(new Point(11.5373304, 12.6004783));
+        pot.add(new Point(13.5373304, 14.6004783));
+        dat.addShranjenaPot(pot2,"00:07:34", 1000, 10);
+        dat.addShranjenaPot(pot_1,"01:02:41", 4000, 11);
+        dat.addShranjenaPot(pot_2,"00:47:32", 3200, 12);
         return dat;
     }
 }

@@ -44,7 +44,7 @@ public class TabbedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tabbed);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -66,12 +66,12 @@ public class TabbedActivity extends AppCompatActivity {
     }
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_tabbed, menu);
         return true;
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -117,13 +117,25 @@ public class TabbedActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             if(getArguments().getInt(ARG_SECTION_NUMBER) == 1){
+                final View rootView = inflater.inflate(R.layout.fragment_tabbed2, container, false);
+                ApplicationMy am = (ApplicationMy) ApplicationMy.getAppContext();
+                RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.Gore);
+                recyclerView.setHasFixedSize(true);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(rootView.getContext());
+                recyclerView.setLayoutManager(mLayoutManager);
+                RecyclerView.Adapter mAdapter = new MyAdapter(am.da.getGore());
+                recyclerView.setAdapter(mAdapter);
+
+                return rootView;
+            }
+            else if(getArguments().getInt(ARG_SECTION_NUMBER) == 2){
                 final View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
                 ApplicationMy am = (ApplicationMy) ApplicationMy.getAppContext();
                 RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.RecView);
                 recyclerView.setHasFixedSize(true);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(rootView.getContext());
                 recyclerView.setLayoutManager(mLayoutManager);
-                RecyclerView.Adapter mAdapter = new MyAdapter(am.da.getGore());
+                RecyclerView.Adapter mAdapter = new AdapterPot(am.da.getShranjenaPot());
                 recyclerView.setAdapter(mAdapter);
                 FloatingActionButton gumb = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButton);
                 gumb.setOnClickListener(new View.OnClickListener() {
@@ -137,8 +149,6 @@ public class TabbedActivity extends AppCompatActivity {
             }
             else {
                 View rootView = inflater.inflate(R.layout.fragment_tabbed2, container, false);
-                TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-                textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
                 return rootView;
             }
 
@@ -165,7 +175,7 @@ public class TabbedActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
@@ -175,8 +185,6 @@ public class TabbedActivity extends AppCompatActivity {
                     return "SECTION 1";
                 case 1:
                     return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
             }
             return null;
         }
