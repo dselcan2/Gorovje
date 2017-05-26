@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TabbedActivity extends AppCompatActivity {
 
@@ -37,6 +38,7 @@ public class TabbedActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +114,15 @@ public class TabbedActivity extends AppCompatActivity {
             fragment.setArguments(args);
             return fragment;
         }
+        @Override
+        public void onResume(){
+            super.onResume();
+            if(recyclerView != null){
+                recyclerView.getAdapter().notifyDataSetChanged();
+            }
+        }
 
+        private RecyclerView recyclerView;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -131,8 +141,8 @@ public class TabbedActivity extends AppCompatActivity {
             else if(getArguments().getInt(ARG_SECTION_NUMBER) == 2){
                 final View rootView = inflater.inflate(R.layout.fragment_tabbed, container, false);
                 ApplicationMy am = (ApplicationMy) ApplicationMy.getAppContext();
-                RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.RecView);
-                recyclerView.setHasFixedSize(true);
+                recyclerView = (RecyclerView) rootView.findViewById(R.id.RecView);
+                recyclerView.setHasFixedSize(false);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(rootView.getContext());
                 recyclerView.setLayoutManager(mLayoutManager);
                 RecyclerView.Adapter mAdapter = new AdapterPot(am.da.getShranjenaPot());
@@ -145,6 +155,11 @@ public class TabbedActivity extends AppCompatActivity {
                         rootView.getContext().startActivity(intent);
                     }
                 });
+                /*if(mAdapter.getItemCount() != am.da.getShranjenaPot().size()){
+                    mAdapter.notifyDataSetChanged();
+                    Toast.makeText(rootView.getContext(),"something is odd", Toast.LENGTH_SHORT).show();
+                }*/
+                Toast.makeText(rootView.getContext(),"class: " + am.da.getShranjenaPot().size() + " adapter: " + mAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
                 return rootView;
             }
             else {

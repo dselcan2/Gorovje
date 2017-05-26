@@ -38,7 +38,7 @@ public class SnemanjeLokacije extends AppCompatActivity {
     double prehojenadolzina;
     double zacetnicas;
     long time;
-
+    ApplicationMy am;
     boolean snemam;
 
     final Gson gson = new Gson();
@@ -46,6 +46,7 @@ public class SnemanjeLokacije extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        am = (ApplicationMy) getApplication();
         setContentView(R.layout.activity_snemanje_lokacije);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -112,22 +113,20 @@ public class SnemanjeLokacije extends AppCompatActivity {
             else{
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
                 time = System.currentTimeMillis();
+                button.setText("nehaj snemati");
+                snemam = true;
             }
-            button.setText("nehaj snemati");
-            snemam = true;
+
         }
         else{
             button.setText("zacni snemati");
             snemam = false;
-            ShraniPot shraniPot = new ShraniPot(pot, (String)elapsedtime.getText(), Double.parseDouble((String)length.getText()), Double.parseDouble((String)altitude.getText()));
+            ShraniPot shraniPot = new ShraniPot(new ArrayList<>(pot), (String)elapsedtime.getText(), Double.parseDouble((String)length.getText()), Double.parseDouble((String)altitude.getText()));
             visinskizacetek = 0;
             prehojenadolzina = 0;
             time = 0;
-            SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-            String json = gson.toJson(shraniPot);
-            SharedPreferences.Editor prefsEditor = mPrefs.edit();
-            prefsEditor.putString("ShraniPot", json);
-            prefsEditor.commit();
+            am.da.addShranjenaPot(shraniPot);
+            Toast.makeText(this,"dodal", Toast.LENGTH_SHORT).show();
             pot.clear();
         }
 

@@ -55,6 +55,10 @@ public class DataAll {
         return tmp;
     }
 
+    public void addShranjenaPot(ShraniPot pot){
+        shranjenaPot.add(pot);
+    }
+
     public ArrayList<Gora> getGore() {
         return gore;
     }

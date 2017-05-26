@@ -48,6 +48,12 @@ public class AdapterPot extends RecyclerView.Adapter<AdapterPot.ViewHolder> {
         notifyItemInserted(position);
     }
 
+    public void swap(ArrayList<ShraniPot> data){
+        mDataset.clear();
+        mDataset.addAll(data);
+        notifyDataSetChanged();
+    }
+
     public void remove(String item) {
         int position = mDataset.indexOf(item);
         mDataset.remove(position);
