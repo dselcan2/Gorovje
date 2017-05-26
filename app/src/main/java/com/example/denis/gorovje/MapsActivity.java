@@ -1,9 +1,12 @@
 package com.example.denis.gorovje;
 
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.example.Point;
+import com.example.ShraniPot;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -11,6 +14,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -18,10 +24,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextView ime;
     TextView dolzina;
     TextView cas;
+    ShraniPot pot;
+    ApplicationMy am;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        am = (ApplicationMy) getApplication();
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -30,10 +39,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ime = (TextView) findViewById(R.id.textView14);
         dolzina = (TextView) findViewById(R.id.textView13);
         cas = (TextView) findViewById(R.id.textView5);
-        String[] str = getIntent().getStringArrayExtra("str");
-        ime.setText(str[0]);
-        dolzina.setText(str[1]);
-        cas.setText(str[2]);
+        int st = getIntent().getIntExtra("stevilo", 0);
+        pot = am.da.getShranjenaPot().get(st);
+        ime.setText("TEST");
+        dolzina.setText(Double.toString(pot.getLength()));
+        cas.setText(pot.getTime());
     }
 
 
@@ -49,12 +59,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        double[] dbl = getIntent().getDoubleArrayExtra("pot");
-        LatLng point = new LatLng(0,0);
-        for(int i=0; i<dbl.length; i+=2){
-            point = new LatLng(dbl[i+1], dbl[i]);
-            mMap.addMarker(new MarkerOptions().position(point));
+        LatLng point;
+        ArrayList<Point> poti = new ArrayList<>(pot.getPot());
+        for(int i=0; i<poti.size()-1; i++){
+            point = new LatLng(poti.get(i).getLatitude(), poti.get(i).getLongitude());
+            mMap.addMarker(new MarkerOptions().position(point).title("tukaj lahko dam stvari kot dolzina/povprecna hitrost"));
+            mMap.addPolyline(new PolylineOptions().add(point, new LatLng(poti.get(i+1).getLatitude(), poti.get(i+1).getLongitude())).width(5).color(Color.RED));
         }
+        point = new LatLng(poti.get(poti.size()-1).getLatitude(), poti.get(poti.size()-1).getLongitude());
+        mMap.addMarker(new MarkerOptions().position(point).title("tukaj lahko dam stvari kot dolzina/povprecna hitrost"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(point));
         // Add a marker in Sydney and move the camera
         /*LatLng sydney = new LatLng(-34, 151);

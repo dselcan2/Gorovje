@@ -70,25 +70,13 @@ public class AdapterPot extends RecyclerView.Adapter<AdapterPot.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         final int poz = position;
         holder.txtHeader.setText("testna");
-        int imgid = context.getResources().getIdentifier("pot", "drawable", context.getApplicationContext().getPackageName());
+        final int imgid = context.getResources().getIdentifier("pot", "drawable", context.getApplicationContext().getPackageName());
         holder.img.setImageResource(imgid);
-        final String[] str = new String[3];
-        str[0] = "IME";
-        str[1] = Double.toString(mDataset.get(poz).getLength());
-        str[2] = mDataset.get(poz).getTime();
-        final double[] pot = new double[mDataset.get(poz).getPot().size()*2];
-        int stevec = 0;
-        for(int i=0; i<mDataset.get(poz).getPot().size(); i+=2){
-            pot[i] = mDataset.get(poz).getPot().get(stevec).getLatitude();
-            pot[i+1] = mDataset.get(poz).getPot().get(stevec).getLongitude();
-            stevec++;
-        }
         holder.CL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context,MapsActivity.class);
-                intent.putExtra("str", str);
-                intent.putExtra("pot", pot);
+                intent.putExtra("stevilo", poz);
                 context.startActivity(intent);
             }
         });
