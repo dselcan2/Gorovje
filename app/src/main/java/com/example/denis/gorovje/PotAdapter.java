@@ -4,14 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.Pot;
+import com.example.Point;
 
 import java.util.ArrayList;
 
@@ -20,11 +19,13 @@ import java.util.ArrayList;
  */
 
 public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
-    private ArrayList<Pot> mDataset;
+    private ArrayList<Point> mDataset;
+    private String ime;
     ApplicationMy am;
     private Context context;
-    public PotAdapter(ArrayList<Pot> myDataset) {
+    public PotAdapter(ArrayList<Point> myDataset, String ime) {
         mDataset = myDataset;
+        this.ime = ime;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -40,7 +41,7 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
         }
     }
 
-    public void add(int position, Pot item) {
+    public void add(int position, Point item) {
         mDataset.add(position, item);
         notifyItemInserted(position);
     }
@@ -59,19 +60,15 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(PotAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(PotAdapter.ViewHolder holder, final int position) {
         final int poz = position;
-        holder.txt.setText(mDataset.get(position).getIme());
+        holder.txt.setText(ime + " pot stevilka" + position+1);
         holder.cl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mDataset.get(poz).getPot() != null){
-                    double x1 = mDataset.get(poz).getPot().get(0).getLongitude();
-                    double y1 = mDataset.get(poz).getPot().get(0).getLatitude();
-                    double x2 = mDataset.get(poz).getPot().get(mDataset.get(poz).getPot().size()-1).getLongitude();
-                    double y2 = mDataset.get(poz).getPot().get(mDataset.get(poz).getPot().size()-1).getLatitude();
-                    String lok = "http://maps.google.com/maps?saddr="+x1+","+y1+"&daddr="+x2+","+y2+"";
-                    Uri gmmIntentUri = Uri.parse(lok);
+                if(mDataset.get(poz) != null){
+                    String str = "google.navigation:q=" + mDataset.get(position).getLongitude() + "," + mDataset.get(position).getLatitude();
+                    Uri gmmIntentUri = Uri.parse(str);
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
                     context.startActivity(mapIntent);

@@ -159,7 +159,7 @@ public class TabbedActivity extends AppCompatActivity {
                     mAdapter.notifyDataSetChanged();
                     Toast.makeText(rootView.getContext(),"something is odd", Toast.LENGTH_SHORT).show();
                 }*/
-                Toast.makeText(rootView.getContext(),"class: " + am.da.getShranjenaPot().size() + " adapter: " + mAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(rootView.getContext(),"class: " + am.da.getShranjenaPot().size() + " adapter: " + mAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
                 return rootView;
             }
             else {

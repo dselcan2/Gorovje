@@ -1,5 +1,7 @@
 package com.example;
 
+import java.util.ArrayList;
+
 /**
  * Created by Denis on 27/02/2017.
  */
@@ -11,14 +13,35 @@ public class Gora {
     double visina;
     String opis;
     String Slika;
+    ArrayList<Point> zacetki = new ArrayList<>();
 
-    public Gora(String naziv, Point tocka, double visina, String opis, String slika, int id) {
+    public ArrayList<Point> getZacetki() {
+        return zacetki;
+    }
+
+    public void setZacetki(ArrayList<Point> zacetki) {
+        this.zacetki = zacetki;
+    }
+
+    public String getGorovje() {
+        return gorovje;
+    }
+
+    public void setGorovje(String gorovje) {
+        this.gorovje = gorovje;
+    }
+
+    String gorovje;
+
+    public Gora(String naziv, Point tocka, double visina, String opis, String slika, int id, ArrayList<Point> zacetki, String gorovje) {
         this.naziv = naziv;
         this.tocka = tocka;
         this.visina = visina;
         this.opis = opis;
         this.Slika = slika;
         this.id = id;
+        this.zacetki = zacetki;
+        this.gorovje = gorovje;
     }
 
     public String getNaziv() {
