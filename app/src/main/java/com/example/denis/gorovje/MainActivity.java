@@ -15,10 +15,8 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.Gora;
-import com.example.Point;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -83,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         displayGora = getIntent().getIntExtra("id_gora",0);
-        ArrayList<Point> poti = new ArrayList<Point>();
         Gora gora = Am.da.getGore().get(displayGora);
         mAdapter = new PotAdapter(gora.getZacetki(), gora.getNaziv());
         recyclerView.setAdapter(mAdapter);
