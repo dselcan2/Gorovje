@@ -129,6 +129,7 @@ public class TabbedActivity extends AppCompatActivity {
             if(getArguments().getInt(ARG_SECTION_NUMBER) == 1){
                 final View rootView = inflater.inflate(R.layout.fragment_tabbed2, container, false);
                 ApplicationMy am = (ApplicationMy) ApplicationMy.getAppContext();
+                am.signedIn = true;
                 RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.Gore);
                 recyclerView.setHasFixedSize(true);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(rootView.getContext());

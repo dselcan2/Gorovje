@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.Gora;
 
@@ -90,8 +91,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        InputStream is = new ByteArrayInputStream(xml.getBytes(Charset.defaultCharset()));
+        InputStream is = null;
+        try{
+            is = new ByteArrayInputStream(xml.getBytes(Charset.defaultCharset()));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         String slika = "";
         String temp2500 = "";
         String temp2000 = "";
@@ -145,12 +151,17 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String str = vreme.get(0).vreme + " " + vreme.get(0).temp2500 + " " + vreme.get(0).temp2000 + " " + vreme.get(0).temp1500 + " " + vreme.get(0).temp1000 + " " + vreme.get(0).temp500 + " " + vreme.size();
-        t2.start();
-        try {
-            t2.join();
-        } catch (InterruptedException e) {
+        catch (Exception e){
             e.printStackTrace();
+        }
+        if(vreme.size() > 0) {
+            String str = vreme.get(0).vreme + " " + vreme.get(0).temp2500 + " " + vreme.get(0).temp2000 + " " + vreme.get(0).temp1500 + " " + vreme.get(0).temp1000 + " " + vreme.get(0).temp500 + " " + vreme.size();
+            t2.start();
+            try {
+                t2.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -165,55 +176,60 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void OnClick(View view){
-        layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.vremelayout, null);
+        if(vreme.size() > 0){
+            layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+            ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.vremelayout, null);
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
-        popupWindow = new PopupWindow(container, width - 20, height/3, true);
-        popupWindow.showAtLocation(conLayout, Gravity.CENTER, 0, height/6 * -1);
-        ImageView img1 = (ImageView) container.findViewById(R.id.imageView3);
-        ImageView img2 = (ImageView) container.findViewById(R.id.imageView7);
-        ImageView img3 = (ImageView) container.findViewById(R.id.imageView6);
-        TextView txt1 = (TextView) container.findViewById(R.id.textView23);
-        TextView txt2 = (TextView) container.findViewById(R.id.textView24);
-        TextView txt3 = (TextView) container.findViewById(R.id.textView22);
-        TextView temp1 = (TextView) container.findViewById(R.id.textView26);
-        TextView temp2 = (TextView) container.findViewById(R.id.textView28);
-        TextView temp3 = (TextView) container.findViewById(R.id.textView25);
-        img1.setImageBitmap(slika[0]);
-        img2.setImageBitmap(slika[1]);
-        img3.setImageBitmap(slika[2]);
-        txt1.setText(vreme.get(0).vreme);
-        txt2.setText(vreme.get(1).vreme);
-        txt3.setText(vreme.get(2).vreme);
-        double visina = Am.da.getGore().get(displayGora).getVisina();
-        if(visina > 2500){
-            temp1.setText(vreme.get(0).temp2500 + "°C");
-            temp2.setText(vreme.get(1).temp2500 + "°C");
-            temp3.setText(vreme.get(2).temp2500 + "°C");
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int height = displayMetrics.heightPixels;
+            int width = displayMetrics.widthPixels;
+            popupWindow = new PopupWindow(container, width - 20, height/3, true);
+            popupWindow.showAtLocation(conLayout, Gravity.CENTER, 0, height/6 * -1);
+            ImageView img1 = (ImageView) container.findViewById(R.id.imageView3);
+            ImageView img2 = (ImageView) container.findViewById(R.id.imageView7);
+            ImageView img3 = (ImageView) container.findViewById(R.id.imageView6);
+            TextView txt1 = (TextView) container.findViewById(R.id.textView23);
+            TextView txt2 = (TextView) container.findViewById(R.id.textView24);
+            TextView txt3 = (TextView) container.findViewById(R.id.textView22);
+            TextView temp1 = (TextView) container.findViewById(R.id.textView26);
+            TextView temp2 = (TextView) container.findViewById(R.id.textView28);
+            TextView temp3 = (TextView) container.findViewById(R.id.textView25);
+            img1.setImageBitmap(slika[0]);
+            img2.setImageBitmap(slika[1]);
+            img3.setImageBitmap(slika[2]);
+            txt1.setText(vreme.get(0).vreme);
+            txt2.setText(vreme.get(1).vreme);
+            txt3.setText(vreme.get(2).vreme);
+            double visina = Am.da.getGore().get(displayGora).getVisina();
+            if(visina > 2500){
+                temp1.setText(vreme.get(0).temp2500 + "°C");
+                temp2.setText(vreme.get(1).temp2500 + "°C");
+                temp3.setText(vreme.get(2).temp2500 + "°C");
+            }
+            else if(visina > 2000){
+                temp1.setText(vreme.get(0).temp2000 + "°C");
+                temp2.setText(vreme.get(1).temp2000 + "°C");
+                temp3.setText(vreme.get(2).temp2000 + "°C");
+            }
+            else if(visina > 1500){
+                temp1.setText(vreme.get(0).temp1500 + "°C");
+                temp2.setText(vreme.get(1).temp1500 + "°C");
+                temp3.setText(vreme.get(2).temp1500 + "°C");
+            }
+            else if(visina > 1000){
+                temp1.setText(vreme.get(0).temp1000 + "°C");
+                temp2.setText(vreme.get(1).temp1000 + "°C");
+                temp3.setText(vreme.get(2).temp1000 + "°C");
+            }
+            else{
+                temp1.setText(vreme.get(0).temp500 + "°C");
+                temp2.setText(vreme.get(1).temp500 + "°C");
+                temp3.setText(vreme.get(2).temp500 + "°C");
+            }
         }
-        else if(visina > 2000){
-            temp1.setText(vreme.get(0).temp2000 + "°C");
-            temp2.setText(vreme.get(1).temp2000 + "°C");
-            temp3.setText(vreme.get(2).temp2000 + "°C");
-        }
-        else if(visina > 1500){
-            temp1.setText(vreme.get(0).temp1500 + "°C");
-            temp2.setText(vreme.get(1).temp1500 + "°C");
-            temp3.setText(vreme.get(2).temp1500 + "°C");
-        }
-        else if(visina > 1000){
-            temp1.setText(vreme.get(0).temp1000 + "°C");
-            temp2.setText(vreme.get(1).temp1000 + "°C");
-            temp3.setText(vreme.get(2).temp1000 + "°C");
-        }
-        else{
-            temp1.setText(vreme.get(0).temp500 + "°C");
-            temp2.setText(vreme.get(1).temp500 + "°C");
-            temp3.setText(vreme.get(2).temp500 + "°C");
+        else {
+            Toast.makeText(this,"PREVERI POVEZAVO Z INTERNETOM\nČE JO IMAŠ JE MORDA NAPAKA V STORITVI ZA VREME", Toast.LENGTH_LONG).show();
         }
     }
 

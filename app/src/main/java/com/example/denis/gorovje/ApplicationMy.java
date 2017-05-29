@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.example.DataAll;
+
 /**
  * Created by Denis on 02/03/2017.
  */
@@ -11,6 +12,9 @@ import com.example.DataAll;
 public class ApplicationMy extends Application {
     public static Context context;
     DataAll da;
+    public String userEmail;
+    boolean signedIn;
+
     @Override
     public void onCreate() {
         super.onCreate();
