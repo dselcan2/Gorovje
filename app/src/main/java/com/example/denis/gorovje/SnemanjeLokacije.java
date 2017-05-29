@@ -52,9 +52,6 @@ public class SnemanjeLokacije extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
         }
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 3);
-        }
         latitude = (TextView) findViewById(R.id.textView4);
         longitude = (TextView) findViewById(R.id.textView3);
         altitude = (TextView) findViewById(R.id.textView6);
@@ -121,12 +118,17 @@ public class SnemanjeLokacije extends AppCompatActivity {
         else{
             button.setText("zacni snemati");
             snemam = false;
-            ShraniPot shraniPot = new ShraniPot(new ArrayList<>(pot), (String)elapsedtime.getText(), Double.parseDouble((String)length.getText()), Double.parseDouble((String)altitude.getText()));
             visinskizacetek = 0;
             prehojenadolzina = 0;
             time = 0;
-            am.da.addShranjenaPot(shraniPot);
-            Toast.makeText(this,"dodal", Toast.LENGTH_SHORT).show();
+            if(pot.size() > 0){
+                ShraniPot shraniPot = new ShraniPot(new ArrayList<>(pot), (String)elapsedtime.getText(), Double.parseDouble((String)length.getText()), Double.parseDouble((String)altitude.getText()));
+                am.da.addShranjenaPot(shraniPot);
+                Toast.makeText(this,"dodal", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this,"nisem zaznal nobene poti", Toast.LENGTH_SHORT).show();
+            }
             pot.clear();
         }
 
