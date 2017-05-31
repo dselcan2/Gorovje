@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "269543607355",
+    "project_id": "pohodniski-vodnik"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269543607355:android:e3960220f1018ef1",
+        "android_client_info": {
+          "package_name": "com.example.denis.gorovje"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "269543607355-s7as7gdbf69csftcvdb0qmuhadnjd5uq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.denis.gorovje",
+            "certificate_hash": "5d28e7e6afe0e3038cdd3e754ef2fad3a76ec509"
+          }
+        },
+        {
+          "client_id": "269543607355-er5i9i8p3p8gb4al3fq48tnv5eghdr90.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYn_Ir4piHdFmz8TbrCRWH4BsWKJplhEw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
