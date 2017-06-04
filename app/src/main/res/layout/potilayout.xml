@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/PotLayout"
     android:layout_width="fill_parent"
-    android:layout_height="35dip">
+    android:layout_height="50dip">
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="42dp"
-        android:layout_height="26dp"
+        android:layout_width="50dp"
+        android:layout_height="38dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="6dp"
         android:layout_marginStart="6dp"
@@ -19,6 +19,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.428"
         app:srcCompat="@drawable/pot"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
@@ -26,8 +27,8 @@
 
     <TextView
         android:id="@+id/pot"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="291dp"
+        android:layout_height="42dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"

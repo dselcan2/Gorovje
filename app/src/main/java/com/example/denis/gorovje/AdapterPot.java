@@ -91,7 +91,10 @@ public class AdapterPot extends RecyclerView.Adapter<AdapterPot.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        if(mDataset != null){
+            return mDataset.size();
+        }
+        else return 0;
     }
 
 }

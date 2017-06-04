@@ -1,6 +1,7 @@
 package com.example.denis.gorovje;
 
 import android.Manifest;
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -18,6 +19,8 @@ import com.example.Point;
 import com.example.ShraniPot;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class SnemanjeLokacije extends AppCompatActivity {
@@ -41,6 +44,9 @@ public class SnemanjeLokacije extends AppCompatActivity {
     ApplicationMy am;
     boolean snemam;
 
+    private static final String DATA_MAP = "potidatamap";
+    private static final String FILE_NAME = "poti.json";
+
     final Gson gson = new Gson();
 
     @Override
@@ -62,6 +68,7 @@ public class SnemanjeLokacije extends AppCompatActivity {
         prehojenadolzina = 0;
         time = 0;
         snemam = false;
+
         t.start();
         pot = new ArrayList<Point>();
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -123,8 +130,11 @@ public class SnemanjeLokacije extends AppCompatActivity {
             time = 0;
             if(pot.size() > 0){
                 ShraniPot shraniPot = new ShraniPot(new ArrayList<>(pot), (String)elapsedtime.getText(), Double.parseDouble((String)length.getText()), Double.parseDouble((String)altitude.getText()));
-                am.da.addShranjenaPot(shraniPot);
-                Toast.makeText(this,"dodal", Toast.LENGTH_SHORT).show();
+                am.shraniPot.add(shraniPot);
+                boolean shranil = save(am.shraniPot);
+                if(shranil){
+                    Toast.makeText(this,"dodal", Toast.LENGTH_SHORT).show();
+                }
             }
             else{
                 Toast.makeText(this,"nisem zaznal nobene poti", Toast.LENGTH_SHORT).show();
@@ -133,6 +143,12 @@ public class SnemanjeLokacije extends AppCompatActivity {
         }
 
     }
+
+    public boolean save(ArrayList<ShraniPot> pot){
+        File file = new File(this.getExternalFilesDir(DATA_MAP), FILE_NAME);
+        return ApplicationJson.save(pot ,file);
+    }
+
     Thread t = new Thread() {
 
         @Override

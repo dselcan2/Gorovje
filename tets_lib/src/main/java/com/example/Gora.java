@@ -7,19 +7,18 @@ import java.util.ArrayList;
  */
 
 public class Gora {
-    int id;
     String naziv;
     Point tocka;
     double visina;
-    String opis;
-    String Slika;
-    ArrayList<Point> zacetki = new ArrayList<>();
+    String slika;
+    String gorovje;
+    ArrayList<Pot> zacetki = new ArrayList<>();
 
-    public ArrayList<Point> getZacetki() {
+    public ArrayList<Pot> getZacetki() {
         return zacetki;
     }
 
-    public void setZacetki(ArrayList<Point> zacetki) {
+    public void setZacetki(ArrayList<Pot> zacetki) {
         this.zacetki = zacetki;
     }
 
@@ -31,17 +30,16 @@ public class Gora {
         this.gorovje = gorovje;
     }
 
-    String gorovje;
-
-    public Gora(String naziv, Point tocka, double visina, String opis, String slika, int id, ArrayList<Point> zacetki, String gorovje) {
+    public Gora(String naziv, Point tocka, double visina, String slika, ArrayList<Pot> zacetki, String gorovje) {
         this.naziv = naziv;
         this.tocka = tocka;
         this.visina = visina;
-        this.opis = opis;
-        this.Slika = slika;
-        this.id = id;
+        this.slika = slika;
         this.zacetki = zacetki;
         this.gorovje = gorovje;
+    }
+
+    public Gora() {
     }
 
     public String getNaziv() {
@@ -68,25 +66,9 @@ public class Gora {
         this.visina = visina;
     }
 
-    public String getOpis() {
-        return opis;
-    }
+    public String getSlika() { return slika;}
 
-    public void setOpis(String opis) {
-        this.opis = opis;
-    }
-
-    public String getSlika() { return Slika;}
-
-    public void setSlika(String slika) {this.Slika = slika;}
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
+    public void setSlika(String slika) {this.slika = slika;}
 
     @Override
     public String toString() {

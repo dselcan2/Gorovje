@@ -1,5 +1,6 @@
 package com.example.denis.gorovje;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.constraint.ConstraintLayout;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.Gora;
+import com.squareup.picasso.Picasso;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -45,9 +48,10 @@ public class MainActivity extends AppCompatActivity {
     TextView latitude;
     TextView langnitude;
     ImageView Image;
-    int displayGora;
+    String displayGora;
     String xml;
     private ConstraintLayout conLayout;
+    Gora gora;
 
     PopupWindow popupWindow;
     LayoutInflater layoutInflater;
@@ -55,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.Adapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
+
+    String str;
 
     ArrayList<Vreme> vreme = new ArrayList<>();
     Bitmap[] slika = new Bitmap[3];
@@ -81,16 +87,26 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
-        displayGora = getIntent().getIntExtra("id_gora",0);
-        Gora gora = Am.da.getGore().get(displayGora);
-        mAdapter = new PotAdapter(gora.getZacetki(), gora.getNaziv());
+        displayGora = getIntent().getStringExtra("id_gora");
+        gora = new Gora();
+        for(Gora g: Am.gore){
+            if(g.getNaziv().equalsIgnoreCase(displayGora)){
+                gora = g;
+                Log.d("D", g.getGorovje());
+                break;
+            }
+
+        }
+        mAdapter = new PotAdapter(gora.getZacetki());
         recyclerView.setAdapter(mAdapter);
+        str = "";
         update();
         try {
             t.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         InputStream is = null;
         try{
             is = new ByteArrayInputStream(xml.getBytes(Charset.defaultCharset()));
@@ -166,13 +182,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void update(){
-        Gora G = Am.da.getGore().get(displayGora);
+        Gora G = gora;
         Gora.setText(G.getNaziv());
-        Opis.setText(G.getOpis());
+        Opis.setText(Double.toString((int)G.getVisina()) + "m");
         langnitude.setText("" + G.getTocka().getLongitude());
         latitude.setText("" + G.getTocka().getLatitude());
-        int resourceId = getResources().getIdentifier(G.getSlika(), "drawable", getApplicationContext().getPackageName());
-        Image.setImageResource(resourceId);
+        Picasso.with(this).load(G.getSlika()).placeholder(R.drawable.icon_not_found).into(Image);
     }
 
     public void OnClick(View view){
@@ -201,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
             txt1.setText(vreme.get(0).vreme);
             txt2.setText(vreme.get(1).vreme);
             txt3.setText(vreme.get(2).vreme);
-            double visina = Am.da.getGore().get(displayGora).getVisina();
+            double visina = gora.getVisina();
             if(visina > 2500){
                 temp1.setText(vreme.get(0).temp2500 + "°C");
                 temp2.setText(vreme.get(1).temp2500 + "°C");
@@ -229,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         else {
-            Toast.makeText(this,"PREVERI POVEZAVO Z INTERNETOM\nČE JO IMAŠ JE MORDA NAPAKA V STORITVI ZA VREME", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Ni podatka", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -237,26 +252,33 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run(){
             String gorovje = "";
-            if(Am.da.getGore().get(displayGora).getGorovje() == Am.da.JULIJSKE_ALPE){
-                gorovje = "JULIAN-ALPS";
+            Gora gor = new Gora();
+            for(Gora g: Am.gore){
+                if(g.getNaziv().equalsIgnoreCase(displayGora)){
+                    gor = g;
+                    Log.d("D", g.getGorovje());
+                    break;
+                }
+
             }
-            else if(Am.da.getGore().get(displayGora).getGorovje() == Am.da.KAMNISKOSAVINJSE_ALPE){
-                gorovje = "KAMNIK-SAVINJA-ALPS";
-            }
-            else if(Am.da.getGore().get(displayGora).getGorovje() == Am.da.KARAVANKE){
-                gorovje = "KARAVANKE-ALPS";
-            }
-            else if(Am.da.getGore().get(displayGora).getGorovje() == Am.da.POHORJE){
-                gorovje = "POHORJE";
-            }
-            else if(Am.da.getGore().get(displayGora).getGorovje() == Am.da.SNEZNIK){
-                gorovje = "SNEZNIK";
-            }
-            else if(Am.da.getGore().get(displayGora).getGorovje() == Am.da.SKOFJELOSKO_HRIBOVJE){
-                gorovje = "SKOFJELOSKO-HRIBOVJE";
-            }
-            else if(Am.da.getGore().get(displayGora).getGorovje() == Am.da.VZHODNOSLOVENSKO_HRIBOVJE){
-                gorovje = "EAST-MOUNTAINS";
+            if(gor.getGorovje() != null) {
+
+
+                if (gor.getGorovje().equalsIgnoreCase(Am.da.JULIJSKE_ALPE)) {
+                    gorovje = "JULIAN-ALPS";
+                } else if (gor.getGorovje().equalsIgnoreCase(Am.da.KAMNISKOSAVINJSE_ALPE)) {
+                    gorovje = "KAMNIK-SAVINJA-ALPS";
+                } else if (gor.getGorovje().equalsIgnoreCase(Am.da.KARAVANKE)) {
+                    gorovje = "KARAVANKE-ALPS";
+                } else if (gor.getGorovje().equalsIgnoreCase(Am.da.POHORJE)) {
+                    gorovje = "POHORJE";
+                } else if (gor.getGorovje().equalsIgnoreCase(Am.da.SNEZNIK)) {
+                    gorovje = "SNEZNIK";
+                } else if (gor.getGorovje().equalsIgnoreCase(Am.da.SKOFJELOSKO_HRIBOVJE)) {
+                    gorovje = "SKOFJELOSKO-HRIBOVJE";
+                } else if (gor.getGorovje().equalsIgnoreCase(Am.da.VZHODNOSLOVENSKO_HRIBOVJE)) {
+                    gorovje = "EAST-MOUNTAINS";
+                }
             }
             URL url = null;
             BufferedReader in = null;

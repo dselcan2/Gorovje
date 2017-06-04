@@ -5,12 +5,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.Point;
+import com.example.Pot;
 
 import java.util.ArrayList;
 
@@ -19,13 +26,11 @@ import java.util.ArrayList;
  */
 
 public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
-    private ArrayList<Point> mDataset;
-    private String ime;
+    private ArrayList<Pot> mDataset;
     ApplicationMy am;
     private Context context;
-    public PotAdapter(ArrayList<Point> myDataset, String ime) {
+    public PotAdapter(ArrayList<Pot> myDataset) {
         mDataset = myDataset;
-        this.ime = ime;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -41,7 +46,7 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
         }
     }
 
-    public void add(int position, Point item) {
+    public void add(int position, Pot item) {
         mDataset.add(position, item);
         notifyItemInserted(position);
     }
@@ -62,17 +67,40 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(PotAdapter.ViewHolder holder, final int position) {
         final int poz = position;
-        holder.txt.setText(ime + " pot stevilka" + position+1);
+        holder.txt.setText(mDataset.get(position).getIme());
         holder.cl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mDataset.get(poz) != null){
-                    String str = "google.navigation:q=" + mDataset.get(position).getLongitude() + "," + mDataset.get(position).getLatitude();
-                    Uri gmmIntentUri = Uri.parse(str);
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    context.startActivity(mapIntent);
-                }
+                LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(R.layout.popuppot, null);
+                DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+                int width = metrics.widthPixels;
+                int height = metrics.heightPixels;
+                final PopupWindow popupWindow = new PopupWindow(popupView, width-20, height/2, true);
+                popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                TextView ime = (TextView) popupView.findViewById(R.id.textView19);
+                ime.setText(mDataset.get(position).getIme());
+                TextView dolzina = (TextView) popupView.findViewById(R.id.textView20);
+                dolzina.setText(mDataset.get(position).getCas());
+                TextView tezavnost = (TextView) popupView.findViewById(R.id.textView15);
+                tezavnost.setText(mDataset.get(position).getTezavnost());
+                Button gumb = (Button) popupView.findViewById(R.id.button2);
+                gumb.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(mDataset.get(poz) != null){
+                            String str = "google.navigation:q=" + mDataset.get(position).getZacetek().getLongitude() + "," + mDataset.get(position).getZacetek().getLatitude();
+                            Uri gmmIntentUri = Uri.parse(str);
+                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                            mapIntent.setPackage("com.google.android.apps.maps");
+                            context.startActivity(mapIntent);
+                        }
+                        else{
+                            Toast.makeText(context, "ni podatkov", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
             }
         });
     }

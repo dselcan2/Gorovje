@@ -13,12 +13,12 @@ public class DataAll {
     private ArrayList<User> uporabniki;
     private ArrayList<ShraniPot> shranjenaPot;
     final public String JULIJSKE_ALPE = "julijske Alpe";
-    final public String KAMNISKOSAVINJSE_ALPE = "julijske Alpe";
-    final public String KARAVANKE = "julijske Alpe";
-    final public String POHORJE = "julijske Alpe";
-    final public String SNEZNIK = "julijske Alpe";
-    final public String SKOFJELOSKO_HRIBOVJE = "julijske Alpe";
-    final public String VZHODNOSLOVENSKO_HRIBOVJE = "julijske Alpe";
+    final public String KAMNISKOSAVINJSE_ALPE = "kamniskosavinjske Alpe";
+    final public String KARAVANKE = "karavanke";
+    final public String POHORJE = "pohorje";
+    final public String SNEZNIK = "sneznik";
+    final public String SKOFJELOSKO_HRIBOVJE = "skofjelosko hribovje";
+    final public String VZHODNOSLOVENSKO_HRIBOVJE = "vzhodnoslovensko hribovje";
 
 
 
@@ -28,8 +28,8 @@ public class DataAll {
         shranjenaPot = new ArrayList<>();
     }
     //public com.example.Gora(String naziv, com.example.Point tocka, double visina, String opis)
-    public Gora addGora(String naziv, Point tocka, double visina, String opis, String slika, int id, ArrayList<Point> zacetki, String gorovje){
-        Gora tmp = new Gora(naziv, tocka, visina, opis, slika, id, zacetki, gorovje);
+    public Gora addGora(String naziv, Point tocka, double visina, String opis, String slika, ArrayList<Pot> zacetki, String gorovje){
+        Gora tmp = new Gora(naziv, tocka, visina, slika, zacetki, gorovje);
         gore.add(tmp);
         return tmp;
     }
@@ -75,17 +75,17 @@ public class DataAll {
         triglav.add(new Point(46.4105329,13.8422495));
         triglav.add(new Point(46.3386,13.9045));
         triglav.add(new Point(46.2896,13.8022));
-        dat.addGora("Triglav", new Point(46.380748, 13.832683),2864, "Najvecja slovenska gora", "triglav001", 0, triglav ,dat.JULIJSKE_ALPE);
+        //dat.addGora("Triglav", new Point(46.380748, 13.832683),2864, "Najvecja slovenska gora", "triglav001", triglav ,dat.JULIJSKE_ALPE);
         ArrayList<Point> spik = new ArrayList<>();
         spik.add(new Point(46.4688,13.7833));
         spik.add(new Point(46.4444,13.7746));
         spik.add(new Point(46.4688,13.7833));
-        dat.addGora("Spik", new Point(43.380748, 34.832683),2472, "vrh je spicast", "spik",1, spik, dat.JULIJSKE_ALPE);
+        //dat.addGora("Spik", new Point(43.380748, 34.832683),2472, "vrh je spicast", "spik", spik, dat.JULIJSKE_ALPE);
         ArrayList<Point> prisojnik = new ArrayList<>();
         prisojnik.add(new Point(46.4336,13.7435));
         prisojnik.add(new Point(46.4399,13.7624));
         prisojnik.add(new Point(46.4391,13.7483));
-        dat.addGora("Prisojnik", new Point(41.380748, 73.832683),2547, "obrnjena proti soncu", "prisojnik", 2, prisojnik, dat.JULIJSKE_ALPE);
+        //dat.addGora("Prisojnik", new Point(41.380748, 73.832683),2547, "obrnjena proti soncu", "prisojnik", prisojnik, dat.JULIJSKE_ALPE);
         ArrayList<String> ponudba = new ArrayList<>();
         ponudba.add("palacinke");
         ponudba.add("jota");
