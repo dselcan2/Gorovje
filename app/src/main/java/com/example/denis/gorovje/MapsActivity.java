@@ -1,5 +1,6 @@
 package com.example.denis.gorovje;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -7,10 +8,12 @@ import android.widget.TextView;
 
 import com.example.Point;
 import com.example.ShraniPot;
+import com.example.Tocka;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -40,7 +43,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dolzina = (TextView) findViewById(R.id.textView13);
         cas = (TextView) findViewById(R.id.textView5);
         int st = getIntent().getIntExtra("stevilo", 0);
-        pot = am.da.getShranjenaPot().get(st);
+        pot = am.shraniPot.get(st);
         ime.setText("TEST");
         dolzina.setText(Double.toString(pot.getLength()));
         cas.setText(pot.getTime());
@@ -60,15 +63,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LatLng point;
-        ArrayList<Point> poti = new ArrayList<>(pot.getPot());
+        ArrayList<Tocka> poti = new ArrayList<>(pot.getPot());
         for(int i=0; i<poti.size()-1; i++){
-            point = new LatLng(poti.get(i).getLatitude(), poti.get(i).getLongitude());
-            mMap.addMarker(new MarkerOptions().position(point).title("tukaj lahko dam stvari kot dolzina/povprecna hitrost"));
-            mMap.addPolyline(new PolylineOptions().add(point, new LatLng(poti.get(i+1).getLatitude(), poti.get(i+1).getLongitude())).width(5).color(Color.RED));
+            point = new LatLng(poti.get(i).getTocka().getLatitude(), poti.get(i).getTocka().getLongitude());
+            mMap.addMarker(new MarkerOptions().position(point).title(poti.get(i).getCas()).snippet("Prehojena dolžina: " + Integer.toString((int)poti.get(i).getDolzina()) + "m povprečna hitrost: " + Integer.toString((int)poti.get(i).getPovprecnaHitrost()) + "m/s"));
+            mMap.addPolyline(new PolylineOptions().add(point, new LatLng(poti.get(i+1).getTocka().getLatitude(), poti.get(i+1).getTocka().getLongitude())).width(5).color(Color.RED));
         }
-        point = new LatLng(poti.get(poti.size()-1).getLatitude(), poti.get(poti.size()-1).getLongitude());
-        mMap.addMarker(new MarkerOptions().position(point).title("tukaj lahko dam stvari kot dolzina/povprecna hitrost"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(point));
+        point = new LatLng(poti.get(poti.size()-1).getTocka().getLatitude(), poti.get(poti.size()-1).getTocka().getLongitude());
+        mMap.addMarker(new MarkerOptions().position(point)
+                .title(poti.get(poti.size()-1).getCas())
+        .snippet("Prehojena dolžina: " + Integer.toString((int)poti.get(poti.size()-1).getDolzina()) + "m povprečna hitrost: " + Integer.toString((int)poti.get(poti.size()-1).getPovprecnaHitrost()) + "m/s"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 16.0f));
         // Add a marker in Sydney and move the camera
         /*LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));

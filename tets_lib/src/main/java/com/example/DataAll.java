@@ -40,8 +40,8 @@ public class DataAll {
         return tmp;
     }
 
-    public ShraniPot addShranjenaPot(ArrayList<Point> pot, String time, double length, double visina){
-        ShraniPot tmp = new ShraniPot(pot, time, length, visina);
+    public ShraniPot addShranjenaPot(ArrayList<Tocka> pot, String time, double length, String ime){
+        ShraniPot tmp = new ShraniPot(pot, time, length, ime);
         shranjenaPot.add(tmp);
         return tmp;
     }
@@ -113,9 +113,6 @@ public class DataAll {
         ArrayList<Point> pot_2 = new ArrayList<>();
         pot_2.add(new Point(11.5373304, 12.6004783));
         pot_2.add(new Point(13.5373304, 14.6004783));
-        dat.addShranjenaPot(pot,"00:07:34", 1000, 10);
-        dat.addShranjenaPot(pot_1,"01:02:41", 4000, 11);
-        dat.addShranjenaPot(pot_2,"00:47:32", 3200, 12);
         return dat;
     }
 }

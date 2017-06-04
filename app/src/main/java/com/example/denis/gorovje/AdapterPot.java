@@ -75,7 +75,7 @@ public class AdapterPot extends RecyclerView.Adapter<AdapterPot.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final int poz = position;
-        holder.txtHeader.setText("testna");
+        holder.txtHeader.setText(mDataset.get(position).getIme());
         final int imgid = context.getResources().getIdentifier("pot", "drawable", context.getApplicationContext().getPackageName());
         holder.img.setImageResource(imgid);
         holder.CL.setOnClickListener(new View.OnClickListener() {

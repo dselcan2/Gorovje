@@ -7,16 +7,16 @@ import java.util.ArrayList;
  */
 
 public class ShraniPot {
-    ArrayList<Point> pot;
+    ArrayList<Tocka> pot;
     String time;
+    String ime;
     double length;
-    double visina;
 
-    public ArrayList<Point> getPot() {
+    public ArrayList<Tocka> getPot() {
         return pot;
     }
 
-    public void setPot(ArrayList<Point> pot) {
+    public void setPot(ArrayList<Tocka> pot) {
         this.pot = pot;
     }
 
@@ -36,18 +36,19 @@ public class ShraniPot {
         this.length = length;
     }
 
-    public double getVisina() {
-        return visina;
+
+    public String getIme() {
+        return ime;
     }
 
-    public void setVisina(double visina) {
-        this.visina = visina;
+    public void setIme(String ime) {
+        this.ime = ime;
     }
 
-    public ShraniPot(ArrayList<Point> pot, String time, double length, double visina) {
+    public ShraniPot(ArrayList<Tocka> pot, String time, double length, String ime) {
         this.pot = pot;
         this.time = time;
         this.length = length;
-        this.visina = visina;
+        this.ime = ime;
     }
 }
