@@ -3,6 +3,7 @@ package com.example.denis.gorovje;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -64,6 +65,29 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
         return vh;
     }
 
+    public static void dimBehind(PopupWindow popupWindow) {
+        View container;
+        if (popupWindow.getBackground() == null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                container = (View) popupWindow.getContentView().getParent();
+            } else {
+                container = popupWindow.getContentView();
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                container = (View) popupWindow.getContentView().getParent().getParent();
+            } else {
+                container = (View) popupWindow.getContentView().getParent();
+            }
+        }
+        Context context = popupWindow.getContentView().getContext();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager.LayoutParams p = (WindowManager.LayoutParams) container.getLayoutParams();
+        p.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        p.dimAmount = 0.6f;
+        wm.updateViewLayout(container, p);
+    }
+
     @Override
     public void onBindViewHolder(PotAdapter.ViewHolder holder, final int position) {
         final int poz = position;
@@ -76,8 +100,10 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
                 DisplayMetrics metrics = context.getResources().getDisplayMetrics();
                 int width = metrics.widthPixels;
                 int height = metrics.heightPixels;
-                final PopupWindow popupWindow = new PopupWindow(popupView, width-20, height/2, true);
+                final PopupWindow popupWindow = new PopupWindow(popupView, width-20, (int)(height/2.5), true);
+                popupWindow.setBackgroundDrawable(null);
                 popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                dimBehind(popupWindow);
                 TextView ime = (TextView) popupView.findViewById(R.id.textView19);
                 ime.setText(mDataset.get(position).getIme());
                 TextView dolzina = (TextView) popupView.findViewById(R.id.textView20);

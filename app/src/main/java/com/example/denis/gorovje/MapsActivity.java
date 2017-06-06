@@ -44,8 +44,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         cas = (TextView) findViewById(R.id.textView5);
         int st = getIntent().getIntExtra("stevilo", 0);
         pot = am.shraniPot.get(st);
-        ime.setText("TEST");
-        dolzina.setText(Double.toString(pot.getLength()));
+        ime.setText(pot.getIme());
+        dolzina.setText(Double.toString(pot.getLength()) + "m");
         cas.setText(pot.getTime());
     }
 

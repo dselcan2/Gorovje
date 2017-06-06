@@ -1,10 +1,8 @@
 package com.example.denis.gorovje;
 
 import android.Manifest;
-import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -22,17 +20,13 @@ import android.widget.Toast;
 import com.example.Point;
 import com.example.ShraniPot;
 import com.example.Tocka;
-import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class SnemanjeLokacije extends AppCompatActivity {
 
-    TextView latitude;
-    TextView longitude;
-    TextView altitude;
+    TextView speed;
     TextView length;
     TextView elapsedtime;
     Button button;
@@ -53,11 +47,10 @@ public class SnemanjeLokacije extends AppCompatActivity {
     ShraniPot shraniPot;
     Context context;
     String LatestTime;
+    String LatestLen;
 
     private static final String DATA_MAP = "potidatamap";
     private static final String FILE_NAME = "poti.json";
-
-    final Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +62,7 @@ public class SnemanjeLokacije extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
         }
         context = this;
-        latitude = (TextView) findViewById(R.id.textView4);
-        longitude = (TextView) findViewById(R.id.textView3);
-        altitude = (TextView) findViewById(R.id.textView6);
+        speed = (TextView) findViewById(R.id.textView3);
         length = (TextView) findViewById(R.id.textView11);
         elapsedtime = (TextView) findViewById(R.id.textView12);
         button = (Button) findViewById(R.id.button);
@@ -80,14 +71,13 @@ public class SnemanjeLokacije extends AppCompatActivity {
         time = 0;
         snemam = false;
         LatestTime = "00:00:00";
+        LatestLen = "0";
         t.start();
         pot = new ArrayList<Tocka>();
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                latitude.setText("latitude: " + location.getLatitude());
-                longitude.setText("longitude: " + location.getLongitude());
                 if(pot.size()>=1){
                     Location loc = new Location("");
                     loc.setLatitude(pot.get(pot.size()-1).getTocka().getLatitude());
@@ -95,11 +85,12 @@ public class SnemanjeLokacije extends AppCompatActivity {
                     prehojenadolzina += loc.distanceTo(location);
                 }
                 double povpHitr = prehojenadolzina/(((System.currentTimeMillis() - time)/1000)%60);
+                speed.setText("Povprečna hitrost: " + Double.toString(povpHitr) + "m/s");
                 Tocka tocka = new Tocka(new Point(location.getLongitude(), location.getLatitude()), prehojenadolzina, povpHitr, elapsedtime.getText().toString());
                 pot.add(tocka);
-                altitude.setText(Double.toString(location.getAltitude()));
-                length.setText(Double.toString(prehojenadolzina));
-                //Toast.makeText(getApplicationContext(), latitude.getText() + " " + longitude.getText(), Toast.LENGTH_SHORT).show();
+                length.setText("Prehojena dolžina: " + Double.toString(prehojenadolzina) + "m");
+                LatestLen = Double.toString(prehojenadolzina);
+                //Toast.makeText(getApplicationContext(), latitude.getText() + " " + speed.getText(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -152,7 +143,7 @@ public class SnemanjeLokacije extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ime = input.getText().toString();
-                        shraniPot = new ShraniPot(new ArrayList<>(pot), LatestTime, Double.parseDouble((String)length.getText()), ime);
+                        shraniPot = new ShraniPot(new ArrayList<>(pot), LatestTime, Double.parseDouble(LatestLen), ime);
                         am.shraniPot.add(shraniPot);
                         boolean shranil = save(am.shraniPot);
                         if(shranil){
@@ -198,7 +189,7 @@ public class SnemanjeLokacije extends AppCompatActivity {
                                 elapsedtime.setText(time);
                             }
                             else{
-                                elapsedtime.setText("Ne snemam");
+                                elapsedtime.setText("00:00:00");
                             }
                         }
                     });

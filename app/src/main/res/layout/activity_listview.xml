@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/CLayout"
     android:layout_width="fill_parent"
+    android:longClickable="true"
     android:layout_height="?android:attr/listPreferredItemHeight">
 
     <ImageView

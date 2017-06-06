@@ -3,6 +3,7 @@ package com.example.denis.gorovje;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.ImageView;
@@ -190,6 +192,29 @@ public class MainActivity extends AppCompatActivity {
         Picasso.with(this).load(G.getSlika()).placeholder(R.drawable.icon_not_found).into(Image);
     }
 
+    public static void dimBehind(PopupWindow popupWindow) {
+        View container;
+        if (popupWindow.getBackground() == null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                container = (View) popupWindow.getContentView().getParent();
+            } else {
+                container = popupWindow.getContentView();
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                container = (View) popupWindow.getContentView().getParent().getParent();
+            } else {
+                container = (View) popupWindow.getContentView().getParent();
+            }
+        }
+        Context context = popupWindow.getContentView().getContext();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager.LayoutParams p = (WindowManager.LayoutParams) container.getLayoutParams();
+        p.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        p.dimAmount = 0.6f;
+        wm.updateViewLayout(container, p);
+    }
+
     public void OnClick(View view){
         if(vreme.size() > 0){
             layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -201,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
             int width = displayMetrics.widthPixels;
             popupWindow = new PopupWindow(container, width - 20, height/3, true);
             popupWindow.showAtLocation(conLayout, Gravity.CENTER, 0, height/6 * -1);
+            dimBehind(popupWindow);
             ImageView img1 = (ImageView) container.findViewById(R.id.imageView3);
             ImageView img2 = (ImageView) container.findViewById(R.id.imageView7);
             ImageView img3 = (ImageView) container.findViewById(R.id.imageView6);
