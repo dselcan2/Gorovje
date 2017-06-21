@@ -3,6 +3,8 @@ package com.example.denis.gorovje;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Build;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -183,12 +186,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void correctWidth(TextView textView, int desiredWidth)
+    {
+        Paint paint = new Paint();
+        Rect bounds = new Rect();
+
+        paint.setTypeface(textView.getTypeface());
+        float textSize = textView.getTextSize();
+        paint.setTextSize(textSize);
+        String text = textView.getText().toString();
+        paint.getTextBounds(text, 0, text.length(), bounds);
+
+        while (bounds.width() > desiredWidth)
+        {
+            textSize--;
+            paint.setTextSize(textSize);
+            paint.getTextBounds(text, 0, text.length(), bounds);
+        }
+
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+    }
+
     public void update(){
         Gora G = gora;
+        correctWidth(Gora, 100);
         Gora.setText(G.getNaziv());
         Opis.setText(Double.toString((int)G.getVisina()) + "m");
-        langnitude.setText("" + G.getTocka().getLongitude());
-        latitude.setText("" + G.getTocka().getLatitude());
+        if(G.getTocka() != null){
+            langnitude.setText("" + G.getTocka().getLongitude());
+            latitude.setText("" + G.getTocka().getLatitude());
+        }
+        else{
+            langnitude.setText("ni podatka");
+            latitude.setText("ni podatka");
+        }
         Picasso.with(this).load(G.getSlika()).placeholder(R.drawable.icon_not_found).into(Image);
     }
 

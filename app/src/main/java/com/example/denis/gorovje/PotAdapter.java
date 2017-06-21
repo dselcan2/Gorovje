@@ -13,11 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.Point;
 import com.example.Pot;
 
 import java.util.ArrayList;
@@ -37,11 +37,13 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView txt;
+        public ImageView img;
         public ConstraintLayout cl;
 
         public ViewHolder(View v) {
             super(v);
             txt = (TextView) v.findViewById(R.id.pot);
+            img = (ImageView) v.findViewById(R.id.icon2);
             cl = (ConstraintLayout) v.findViewById(R.id.PotLayout);
             context = v.getContext();
         }
@@ -92,6 +94,19 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
     public void onBindViewHolder(PotAdapter.ViewHolder holder, final int position) {
         final int poz = position;
         holder.txt.setText(mDataset.get(position).getIme());
+        String tezavnost = mDataset.get(position).getTezavnost();
+        if(tezavnost.contains("lahka")){
+            holder.img.setImageResource(R.drawable.eazypot);
+        }
+        else if(tezavnost.contains("zelo zahtev")){
+            holder.img.setImageResource(R.drawable.hardpot);
+        }
+        else if(tezavnost.contains("zahtev")){
+            holder.img.setImageResource(R.drawable.pot1);
+        }
+        else{
+            holder.img.setImageResource(R.drawable.pot1);
+        }
         holder.cl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,11 +130,16 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
                     @Override
                     public void onClick(View v) {
                         if(mDataset.get(poz) != null){
-                            String str = "google.navigation:q=" + mDataset.get(position).getZacetek().getLongitude() + "," + mDataset.get(position).getZacetek().getLatitude();
-                            Uri gmmIntentUri = Uri.parse(str);
-                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                            mapIntent.setPackage("com.google.android.apps.maps");
-                            context.startActivity(mapIntent);
+                            try{
+                                String str = "google.navigation:q=" + mDataset.get(position).getZacetek().getLongitude() + "," + mDataset.get(position).getZacetek().getLatitude();
+                                Uri gmmIntentUri = Uri.parse(str);
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                context.startActivity(mapIntent);
+                            }
+                            catch (Exception e){
+                                Toast.makeText(context, "ni podatkov", Toast.LENGTH_SHORT).show();
+                            }
                         }
                         else{
                             Toast.makeText(context, "ni podatkov", Toast.LENGTH_SHORT).show();

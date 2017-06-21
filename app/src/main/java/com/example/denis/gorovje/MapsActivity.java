@@ -19,6 +19,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -59,6 +61,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -66,13 +76,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ArrayList<Tocka> poti = new ArrayList<>(pot.getPot());
         for(int i=0; i<poti.size()-1; i++){
             point = new LatLng(poti.get(i).getTocka().getLatitude(), poti.get(i).getTocka().getLongitude());
-            mMap.addMarker(new MarkerOptions().position(point).title(poti.get(i).getCas()).snippet("Prehojena dolžina: " + Integer.toString((int)poti.get(i).getDolzina()) + "m povprečna hitrost: " + Integer.toString((int)poti.get(i).getPovprecnaHitrost()) + "m/s"));
+            mMap.addMarker(new MarkerOptions().position(point).title(poti.get(i).getCas()).snippet("Dolžina: " + Double.toString(round(poti.get(i).getDolzina(),2)) + "m Hitrost: " + Double.toString(round(poti.get(i).getPovprecnaHitrost(),2)) + "m/s"));
             mMap.addPolyline(new PolylineOptions().add(point, new LatLng(poti.get(i+1).getTocka().getLatitude(), poti.get(i+1).getTocka().getLongitude())).width(5).color(Color.RED));
         }
         point = new LatLng(poti.get(poti.size()-1).getTocka().getLatitude(), poti.get(poti.size()-1).getTocka().getLongitude());
         mMap.addMarker(new MarkerOptions().position(point)
                 .title(poti.get(poti.size()-1).getCas())
-        .snippet("Prehojena dolžina: " + Integer.toString((int)poti.get(poti.size()-1).getDolzina()) + "m povprečna hitrost: " + Integer.toString((int)poti.get(poti.size()-1).getPovprecnaHitrost()) + "m/s"));
+        .snippet("Dolžina: " + Double.toString(round(poti.get(poti.size()-1).getDolzina(),2)) + "m Hitrost: " + Double.toString(round(poti.get(poti.size()-1).getPovprecnaHitrost(),2)) + "m/s"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 16.0f));
         // Add a marker in Sydney and move the camera
         /*LatLng sydney = new LatLng(-34, 151);

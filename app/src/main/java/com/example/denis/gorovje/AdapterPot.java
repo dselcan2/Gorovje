@@ -18,6 +18,8 @@ import com.example.Point;
 import com.example.ShraniPot;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 
 /**
@@ -85,8 +87,12 @@ public class AdapterPot extends RecyclerView.Adapter<AdapterPot.ViewHolder> {
         final int poz = position;
         holder.itemView.setLongClickable(true);
         holder.txtHeader.setText(mDataset.get(position).getIme());
-        final int imgid = context.getResources().getIdentifier("pot", "drawable", context.getApplicationContext().getPackageName());
-        holder.img.setImageResource(imgid);
+        if(mDataset.get(position).getLength() > 1000){
+            holder.img.setImageResource(R.drawable.longpot);
+        }
+        else{
+            holder.img.setImageResource(R.drawable.pot);
+        }
         holder.CL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +122,14 @@ public class AdapterPot extends RecyclerView.Adapter<AdapterPot.ViewHolder> {
                 return true;
             }
         });
-        holder.txtFooter.setText("Dolzina: " + mDataset.get(position).getLength() + " Čas: " + mDataset.get(position).getTime());
+        holder.txtFooter.setText("Dolzina: " + round(mDataset.get(position).getLength(),2) + " Čas: " + mDataset.get(position).getTime());
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     @Override

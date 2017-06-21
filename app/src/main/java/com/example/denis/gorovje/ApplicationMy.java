@@ -26,6 +26,7 @@ public class ApplicationMy extends Application {
     ArrayList<ShraniPot> shraniPot;
     int heightcount;
     int textcount;
+    boolean snemam;
 
     @Override
     public void onCreate() {
@@ -36,6 +37,7 @@ public class ApplicationMy extends Application {
         context = this.getApplicationContext();
         heightcount = 0;
         textcount = 0;
+        snemam = false;
     }
     public static Context getAppContext() {
         return ApplicationMy.context;

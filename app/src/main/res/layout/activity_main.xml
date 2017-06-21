@@ -9,22 +9,22 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="81dp">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="274dp"
-            android:layout_height="41dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:text="Gora"
-            android:textSize="30sp"
-            app:layout_constraintHorizontal_bias="0.571"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/imageButton"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteY="18dp" />
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="275dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
+        android:text="Gora"
+        android:gravity="center_vertical"
+        android:textSize="30sp"
+        app:layout_constraintHorizontal_bias="0.575"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/imageButton"
+        app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/imageView2"
