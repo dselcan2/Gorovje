@@ -233,7 +233,7 @@ public class LoadingActivity extends AppCompatActivity {
                                 else{
                                     am.shraniPot = new ArrayList<ShraniPot>();
                                 }
-                                Intent intent = new Intent(context,TabbedActivity.class);
+                                Intent intent = new Intent(context,GoogleSignInActivity.class);
                                 startActivity(intent);
                                 isDone = false;
                             }

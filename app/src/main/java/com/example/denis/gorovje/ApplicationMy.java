@@ -21,6 +21,8 @@ import java.util.ArrayList;
 
 public class ApplicationMy extends Application {
     public static Context context;
+    public String userEmail;
+    boolean signedIn;
     DataAll da;
     ArrayList<Gora> gore;
     ArrayList<ShraniPot> shraniPot;
