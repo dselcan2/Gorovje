@@ -114,20 +114,24 @@ public class TabbedActivity extends AppCompatActivity {
             //evaluation is already done in class
 
             //termination
+            for(int j=0; j<pop.size(); j++){
+                if(pop.get(j).getTime() == optimal){
+                    break;
+                }
+            }
+            //selection
             Collections.sort(pop, new Comparator<Subject>(){
                 public int compare(Subject s1, Subject s2){
-                    //-1 if s1 1 if s2
                     int S1 = Math.abs(optimal- s1.getTime());
                     int S2 = Math.abs(optimal- s2.getTime());
                     return S1 - S2;
                 }
-            });
+            });//sortiram jih glede na najbližje kandidate
             for(int j=0; j<pop.size()/2; j++){
                 Log.d("sorted: ", pop.get(j).toString());
                 //zbriši preostale
             }
-            //selection
-
+            Log.d("compare to: ", "" + optimal);
             //variation
         }
     }
