@@ -4,6 +4,8 @@ import android.*;
 import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,20 +27,25 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.Gora;
 import com.example.Point;
 import com.example.Pot;
+import com.example.Subject;
 import com.thoughtworks.xstream.XStream;
 
 import java.io.IOException;
@@ -47,8 +55,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Random;
 
 public class TabbedActivity extends AppCompatActivity {
 
@@ -67,13 +77,86 @@ public class TabbedActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     static TabLayout tabLayout;
+    Button button;
+    ApplicationMy am;
 
+    void Evolution(int h, int m){
+        final int optimal = h*60 + m;
+        Random r = new Random();
+        int population = 10;
+        int Narg;
+        int tries = 100;
+        ArrayList<Subject> pop = new ArrayList<>();
+        Subject poti = new Subject();
+        for(int i=0; i<population; i++){
+            Narg = r.nextInt((10-2)+1) + 2;
+            for(int j=0; j<Narg; j++){
+                int Npot = 0;
+                int Ngora = r.nextInt(am.gore.size());
+                while(true){
+                    if(am.gore.get(Ngora).getZacetki().size() != 0){
+                        Npot = r.nextInt(am.gore.get(Ngora).getZacetki().size());
+                        break;
+                    }
+                    Ngora = r.nextInt(am.gore.size());
+                }
+                poti.addPot(am.gore.get(Ngora).getZacetki().get(Npot));//get random gora and random pot
+                Log.d("pot: ", poti.getPot(j).getCas());
+            }
+            pop.add(poti);
+            poti = new Subject();
+            Log.d("pot: ", " ");
+        }
+        for(int i=0; i<pop.size(); i++){
+            Log.d("pop: ", pop.get(i).toString());
+        }
+        for(int i=0; i<1; i++){
+            //evaluation is already done in class
 
+            //termination
+            Collections.sort(pop, new Comparator<Subject>(){
+                public int compare(Subject s1, Subject s2){
+                    //-1 if s1 1 if s2
+                    int S1 = Math.abs(optimal- s1.getTime());
+                    int S2 = Math.abs(optimal- s2.getTime());
+                    return S1 - S2;
+                }
+            });
+            for(int j=0; j<pop.size()/2; j++){
+                Log.d("sorted: ", pop.get(j).toString());
+                //zbriši preostale
+            }
+            //selection
+
+            //variation
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabbed);
+        am = (ApplicationMy) getApplication();
+        button = (Button) findViewById(R.id.button3);
+        button.setOnClickListener(new View.OnClickListener() {
+            int hour = 8;
+            int Minute = 15;
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog mDatePicker;
+                mDatePicker = new TimePickerDialog(TabbedActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        hour = hourOfDay;
+                        Minute = minute;
+                        Evolution(hour,minute);
+                    }
+                }, hour, Minute, true
+                );
+                mDatePicker.setTitle("Select Time");
+                mDatePicker.show();
+            }
+        });
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());

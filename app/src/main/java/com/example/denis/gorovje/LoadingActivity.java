@@ -3,9 +3,11 @@ package com.example.denis.gorovje;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.os.Environment;
 import android.support.v4.content.res.TypedArrayUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -18,15 +20,20 @@ import com.example.Pot;
 import com.example.ShraniPot;
 import com.thoughtworks.xstream.XStream;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Random;
 
 public class LoadingActivity extends AppCompatActivity {
     ImageView slika;
@@ -262,6 +269,46 @@ public class LoadingActivity extends AppCompatActivity {
             gora = ApplicationJsonGore.load(file);
             am.gore = new ArrayList<Gora>(Arrays.asList(gora));
             isDone = true;
+            //Generacija ARFF datoteke
+            /*String arff = "";
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    text.setText("Generiram arff");
+                }
+            });
+            arff += "@relation Poti\n" +
+                    "@attribute nazivpoti string\n" +
+                    "@attribute nazivgore string\n" +
+                    "@attribute cas string\n" +
+                    "@attribute tezavnost string\n" +
+                    "@attribute visina numeric\n" +
+                    "@attribute gorovje {\"julijske alpe\", \"kamnisko savinjske alpe\", \"karavanke\", \"pohorje\", \"sneznik\", \"skofjelosko hribovje\", \"vzhodnoslovensko hribovje\"}\n" +
+                    "@attribute ocenaUporabnika {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}\n" +
+                    "\n" +
+                    "@data\n";
+            Random r = new Random();
+            for(int i=0; i<gora.length; i++){
+                for(int j=0; j<gora[i].getZacetki().size(); j++){
+                    arff += "\"" + gora[i].getZacetki().get(j).getIme() + "\"" + "," + "\"" + gora[i].getNaziv() + "\"" + "," +
+                            "\"" + gora[i].getZacetki().get(j).getCas() + "\"" + "," + "\"" + gora[i].getZacetki().get(j).getTezavnost() + "\"" + "," +
+                            gora[i].getVisina() + "," + "\"" + gora[i].getGorovje() + "\"" +","+ (r.nextInt(10)+1)+ "\n";
+                }
+            }
+            File myFile = new File(Environment.getExternalStorageDirectory().toString()+ "/Poti.arff");
+            try {
+                myFile.createNewFile();
+                FileOutputStream fOut = new FileOutputStream(myFile);
+                OutputStreamWriter myOutWriter =
+                        new OutputStreamWriter(fOut);
+                myOutWriter.append(arff);
+                myOutWriter.close();
+                fOut.close();
+                Log.d("FILE", "file saved to: " + Environment.getExternalStorageDirectory().toString()+ "/Poti.arff");
+
+            } catch (Exception e) {
+
+            }*/
         }
     };
 
