@@ -7,6 +7,7 @@ import android.util.DisplayMetrics;
 
 import com.example.DataAll;
 import com.example.Gora;
+import com.example.Pot;
 import com.example.ShraniPot;
 import com.thoughtworks.xstream.XStream;
 
@@ -29,6 +30,8 @@ public class ApplicationMy extends Application {
     int heightcount;
     int textcount;
     boolean snemam;
+    ArrayList<Pot> poti;
+    int totalTime;
 
     @Override
     public void onCreate() {
@@ -40,6 +43,8 @@ public class ApplicationMy extends Application {
         heightcount = 0;
         textcount = 0;
         snemam = false;
+        poti = new ArrayList<>();
+        totalTime = 0;
     }
     public static Context getAppContext() {
         return ApplicationMy.context;

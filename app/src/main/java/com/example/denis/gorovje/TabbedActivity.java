@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -15,6 +16,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +40,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -80,12 +84,12 @@ public class TabbedActivity extends AppCompatActivity {
     Button button;
     ApplicationMy am;
 
-    void Evolution(int h, int m){
-        final int optimal = h*60 + m;
+    void Evolution(int m){
+        final int optimal = m;
         Random r = new Random();
         int population = 10;
         int Narg;
-        int tries = 100;
+        int tries = 500;
         ArrayList<Subject> pop = new ArrayList<>();
         Subject poti = new Subject();
         for(int i=0; i<population; i++){
@@ -110,14 +114,20 @@ public class TabbedActivity extends AppCompatActivity {
         for(int i=0; i<pop.size(); i++){
             Log.d("pop: ", pop.get(i).toString());
         }
-        for(int i=0; i<1; i++){
+        int count = 0;
+        for(count = 0; count<tries; count++){//begin evol alg
+            boolean terminate = false;
             //evaluation is already done in class
 
             //termination
             for(int j=0; j<pop.size(); j++){
                 if(pop.get(j).getTime() == optimal){
+                    terminate = true;
                     break;
                 }
+            }
+            if(terminate){
+                break;
             }
             //selection
             Collections.sort(pop, new Comparator<Subject>(){
@@ -127,13 +137,114 @@ public class TabbedActivity extends AppCompatActivity {
                     return S1 - S2;
                 }
             });//sortiram jih glede na najbližje kandidate
-            for(int j=0; j<pop.size()/2; j++){
-                Log.d("sorted: ", pop.get(j).toString());
+            for(int j=0; j<population/2; j++){
+                //Log.d("sorted: ", pop.get(j).toString());
                 //zbriši preostale
+                pop.remove(pop.size()-1);
             }
             Log.d("compare to: ", "" + optimal);
             //variation
+            for(int j=0; j<population/2; j++){
+                int Ra = r.nextInt(population/2);
+                int Rb = r.nextInt(population/2);
+                while(Rb == Ra){
+                    Rb = r.nextInt(population/2);
+                }
+                Subject sub = new Subject();
+                for(int k=0; k<(pop.get(Ra).getPoti().size()-1)/2; k++){
+                    sub.addPot(pop.get(Ra).getPot(k));
+                }
+                for(int k=(pop.get(Rb).getPoti().size()-1)/2; k<pop.get(Rb).getPoti().size()-1; k++){
+                    sub.addPot(pop.get(Rb).getPot(k));
+                }//od staršev dobim genetski material in ga dam v naselednjo generacijo
+                boolean spremeni = r.nextBoolean();
+                if(spremeni){//dodajanje novega genetskega materiala
+                    int Npot = 0;
+                    int Ngora = r.nextInt(am.gore.size());
+                    while(true){
+                        if(am.gore.get(Ngora).getZacetki().size() != 0){
+                            Npot = r.nextInt(am.gore.get(Ngora).getZacetki().size());
+                            break;
+                        }
+                        Ngora = r.nextInt(am.gore.size());
+                    }
+                    sub.spremeniPot(r.nextInt(sub.getPoti().size()), am.gore.get(Ngora).getZacetki().get(Npot));
+                }
+                pop.add(sub);
+            }
+            for(int j=0; j<population; j++){
+                Log.d("new Gen:", ""+pop.get(j).getTime());
+            }
         }
+        Collections.sort(pop, new Comparator<Subject>(){
+            public int compare(Subject s1, Subject s2){
+                int S1 = Math.abs(optimal- s1.getTime());
+                int S2 = Math.abs(optimal- s2.getTime());
+                return S1 - S2;
+            }
+        });
+        for(int i=0; i<pop.get(0).getPoti().size(); i++){
+            Log.d("izbrana: ", pop.get(0).getPot(i).getCas());
+        }
+        Log.d("izbrana: ", ""+pop.get(0).getTime());
+        Log.d("N of iterations: ", ""+count);
+        am.poti = pop.get(0).getPoti();
+        am.totalTime = pop.get(0).getTime();
+        Intent intent = new Intent(this, CalculetedPoti.class);
+        startActivity(intent);
+    }
+
+    public int NumPick(){
+        RelativeLayout linearLayout = new RelativeLayout(this);
+        final NumberPicker aNumberPicker = new NumberPicker(this);
+        aNumberPicker.setMaxValue(30);
+        aNumberPicker.setMinValue(1);
+        aNumberPicker.setValue(10);
+
+        final NumberPicker aNumberPicker2 = new NumberPicker(this);
+        String[] mins5 = { "0", "5", "10", "15", "20", "25", "30", "35", "40",
+                "45", "50", "55" };
+        aNumberPicker2.setMinValue(0);
+        aNumberPicker2.setMaxValue(11);
+        aNumberPicker2.setDisplayedValues(mins5);
+        aNumberPicker2.setValue(0);
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(50, 50);
+        RelativeLayout.LayoutParams numPicerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        //numPicerParams.addRule(new RelativeLayout.LayoutParams(10, 25));
+        numPicerParams.setMargins(150, 0, 0, 0);
+
+        RelativeLayout.LayoutParams numPicerParams2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        //numPicerParams2.addRule(RelativeLayout.RIGHT_OF, RelativeLayout.CENTER_HORIZONTAL);
+        numPicerParams2.setMargins(350, 0, 0, 0);
+
+        linearLayout.setLayoutParams(params);
+        linearLayout.addView(aNumberPicker,numPicerParams);
+        linearLayout.addView(aNumberPicker2,numPicerParams2);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Izberite število ur in minut");
+        alertDialogBuilder.setView(linearLayout);
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Ok",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                Log.d("num pick:", ""+aNumberPicker.getValue()*60 + aNumberPicker2.getValue() * 5);
+                                Evolution(aNumberPicker.getValue()*60 + aNumberPicker2.getValue() * 5);
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+        return aNumberPicker.getValue()*60;
     }
 
     @Override
@@ -147,7 +258,7 @@ public class TabbedActivity extends AppCompatActivity {
             int Minute = 15;
             @Override
             public void onClick(View v) {
-                TimePickerDialog mDatePicker;
+                /*TimePickerDialog mDatePicker;
                 mDatePicker = new TimePickerDialog(TabbedActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -159,6 +270,8 @@ public class TabbedActivity extends AppCompatActivity {
                 );
                 mDatePicker.setTitle("Select Time");
                 mDatePicker.show();
+                */
+                NumPick();
             }
         });
         // Create the adapter that will return a fragment for each of the three

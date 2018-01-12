@@ -30,8 +30,38 @@ public class Subject {
         time += minute;
     }
 
+    public void spremeniPot(int i, Pot pot){
+        Pot old = subject.get(i);
+        String Time = old.getCas();
+        String h = Time.split("h")[0];
+        String min = "";
+        int minute = 0;
+        if(Time.contains("min")){
+            min = Time.split("h")[1].replace("min", "");
+            minute = Integer.parseInt(min);
+        }
+        minute += Integer.parseInt(h)*60;
+        time -= minute;
+        subject.set(i, pot);
+        Time = pot.getCas();
+        h = Time.split("h")[0];
+        min = "";
+        minute = 0;
+        if(Time.contains("min")){
+            min = Time.split("h")[1].replace("min", "");
+            minute = Integer.parseInt(min);
+        }
+        minute += Integer.parseInt(h)*60;
+
+        time += minute;
+    }
+
     public Pot getPot(int i){
         return subject.get(i);
+    }
+
+    public ArrayList<Pot> getPoti(){
+        return subject;
     }
 
     public int getTime(){
