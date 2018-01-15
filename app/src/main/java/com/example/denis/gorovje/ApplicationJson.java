@@ -81,7 +81,7 @@ public class ApplicationJson {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 ShraniPot[] a = gson.fromJson(sb.toString(), ShraniPot[].class);
                 if (a == null) { System.out.println("Error: fromJson Format error");
-                } else { System.out.println(a.toString()); };
+                } else { System.out.println(a.toString()); }
                 return new ArrayList<ShraniPot>(Arrays.asList(a));
             } catch (IOException e) {
                 System.out.println("Error load "+e.toString());

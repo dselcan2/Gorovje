@@ -190,6 +190,13 @@ public class SnemanjeLokacije extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         ime = input.getText().toString();
                         shraniPot = new ShraniPot(new ArrayList<>(mService.pot), LatestTime, prehojenadolzina, ime);
+                        Log.d("err:", LatestTime + " " + prehojenadolzina + " " + ime + " " + mService.pot.get(0).getDolzina() + " "
+                                + mService.pot.get(0).getPovprecnaHitrost());
+                        for(int i=0; i<mService.pot.size(); i++){
+                            if(Double.isNaN(mService.pot.get(i).getPovprecnaHitrost())){
+                                mService.pot.get(i).setPovprecnaHitrost(0);
+                            }
+                        }
                         am.shraniPot.add(shraniPot);
                         boolean shranil = save(am.shraniPot);
                         if(shranil){
