@@ -74,6 +74,7 @@ public class LoadingActivity extends AppCompatActivity {
             xStream.alias("Point",Point.class);
             xStream.alias("longnitude", double.class);
             xStream.alias("latnitude", double.class);
+            xStream.omitField(Pot.class, "ocena");
             if(is!=null){
                 try {
                     sneznik = (Gora[])xStream.fromXML(new InputStreamReader(is, "utf-8"));
@@ -270,7 +271,7 @@ public class LoadingActivity extends AppCompatActivity {
             am.gore = new ArrayList<Gora>(Arrays.asList(gora));
             isDone = true;
             //Generacija ARFF datoteke
-            /*String arff = "";
+            String arff = "";
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -278,21 +279,51 @@ public class LoadingActivity extends AppCompatActivity {
                 }
             });
             arff += "@relation Poti\n" +
-                    "@attribute nazivpoti string\n" +
-                    "@attribute nazivgore string\n" +
-                    "@attribute cas string\n" +
-                    "@attribute tezavnost string\n" +
-                    "@attribute visina numeric\n" +
+                    "@attribute cas {\"kratko\", \"dolgo\", \"zelo dolgo\"}\n" +
+                    "@attribute tezavnost {\"lahko\", \"zahtevno\", \"zelo zahtevno\"}\n" +
+                    "@attribute visina {\"nizko\", \"visoko\", \"zelo visoko\"}\n" +
                     "@attribute gorovje {\"julijske alpe\", \"kamnisko savinjske alpe\", \"karavanke\", \"pohorje\", \"sneznik\", \"skofjelosko hribovje\", \"vzhodnoslovensko hribovje\"}\n" +
-                    "@attribute ocenaUporabnika {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}\n" +
+                    "@attribute ocenaUporabnika {\"0\", \"1\", \"2\", \"3\", \"4\", \"5\"}\n" +
                     "\n" +
                     "@data\n";
-            Random r = new Random();
             for(int i=0; i<gora.length; i++){
                 for(int j=0; j<gora[i].getZacetki().size(); j++){
-                    arff += "\"" + gora[i].getZacetki().get(j).getIme() + "\"" + "," + "\"" + gora[i].getNaziv() + "\"" + "," +
-                            "\"" + gora[i].getZacetki().get(j).getCas() + "\"" + "," + "\"" + gora[i].getZacetki().get(j).getTezavnost() + "\"" + "," +
-                            gora[i].getVisina() + "," + "\"" + gora[i].getGorovje() + "\"" +","+ (r.nextInt(10)+1)+ "\n";
+                    String cas = gora[i].getZacetki().get(j).getCas();
+                    String Acas = "";
+                    if(Integer.parseInt(cas.substring(0,1)) < 1){
+                        Acas = "kratko";
+                    }
+                    else if(Integer.parseInt(cas.substring(0,1)) < 3){
+                        Acas = "dolgo";
+                    }
+                    else{
+                        Acas = "zelo dolgo";
+                    }
+                    String tezavnost = "";
+                    if(gora[i].getZacetki().get(j).getTezavnost().contains("lahka")){
+                        tezavnost = "lahko";
+                    }
+                    else if(gora[i].getZacetki().get(j).getTezavnost().contains("zelo zahtev")){
+                        tezavnost = "zelo zahtevno";
+                    }
+                    else{
+                        tezavnost = "zahtevno";
+                    }
+                    String visina = "";
+                    if(gora[i].getVisina()>2000){
+                        visina = "zelo visoko";
+                    }
+                    else if(gora[i].getVisina() > 1000){
+                        visina = "visoko";
+                    }
+                    else{
+                        visina = "nizko";
+                    }
+                    if(gora[i].getZacetki().get(j).getOcena() == null){
+                        gora[i].getZacetki().get(j).setOcena("0");
+                    }
+                    arff += "\"" + Acas + "\"" + "," + "\"" + tezavnost + "\"" + "," +
+                            "\"" +visina + "\"" + "," + "\"" + gora[i].getGorovje() + "\"" +","+ gora[i].getZacetki().get(j).getOcena()+ "\n";
                 }
             }
             File myFile = new File(Environment.getExternalStorageDirectory().toString()+ "/Poti.arff");
@@ -308,7 +339,7 @@ public class LoadingActivity extends AppCompatActivity {
 
             } catch (Exception e) {
 
-            }*/
+            }
         }
     };
 

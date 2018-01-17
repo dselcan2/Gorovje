@@ -1,10 +1,12 @@
 package com.example;
 
+import java.io.Serializable;
+
 /**
  * Created by Denis on 27/02/2017.
  */
 
-public class Point {
+public class Point implements Serializable {
     double longitude, latitude;
 
     public Point(double longitude, double latitude) {

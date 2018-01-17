@@ -33,6 +33,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,7 +42,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import static com.example.denis.gorovje.ApplicationMy.context;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-        mAdapter = new PotAdapter(gora.getZacetki());
+        mAdapter = new PotAdapter(gora.getZacetki(), Am);
         recyclerView.setAdapter(mAdapter);
         str = "";
         update();

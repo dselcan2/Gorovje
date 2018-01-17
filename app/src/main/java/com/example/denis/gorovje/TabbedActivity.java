@@ -321,7 +321,7 @@ public class TabbedActivity extends AppCompatActivity {
         super.onBackPressed();
         Intent homeIntent = new Intent(Intent.ACTION_MAIN);
         homeIntent.addCategory( Intent.CATEGORY_HOME );
-        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(homeIntent);
         android.os.Process.killProcess(android.os.Process.myPid());
     }
@@ -378,6 +378,7 @@ public class TabbedActivity extends AppCompatActivity {
             if(recyclerView != null){
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
+            this.onCreate(null);
         }
 
         private RecyclerView recyclerView;

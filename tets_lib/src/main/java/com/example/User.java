@@ -1,10 +1,12 @@
 package com.example;
 
+import java.io.Serializable;
+
 /**
  * Created by Denis on 27/02/2017.
  */
 
-public class User {
+public class User implements Serializable {
     int ID;
     String Ime, Priimek;
 

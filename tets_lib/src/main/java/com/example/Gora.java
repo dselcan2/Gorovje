@@ -1,12 +1,13 @@
 package com.example;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Denis on 27/02/2017.
  */
 
-public class Gora {
+public class Gora implements Serializable {
     String naziv;
     Point tocka;
     double visina;

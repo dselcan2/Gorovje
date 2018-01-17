@@ -14,14 +14,17 @@ import com.thoughtworks.xstream.XStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by Denis on 02/03/2017.
  */
 
-public class ApplicationMy extends Application {
-    public static Context context;
+public class ApplicationMy extends Application implements Serializable {
+    public static transient Context context;
     public String userEmail;
     boolean signedIn;
     DataAll da;
@@ -46,6 +49,8 @@ public class ApplicationMy extends Application {
         poti = new ArrayList<>();
         totalTime = 0;
     }
+
+
     public static Context getAppContext() {
         return ApplicationMy.context;
     }

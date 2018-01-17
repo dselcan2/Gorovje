@@ -1,12 +1,13 @@
 package com.example;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Denis on 16/04/2017.
  */
 
-public class ShraniPot {
+public class ShraniPot implements Serializable {
     ArrayList<Tocka> pot;
     String time;
     String ime;

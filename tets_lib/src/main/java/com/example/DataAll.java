@@ -1,5 +1,6 @@
 package com.example;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  * Created by Denis on 27/02/2017.
  */
 
-public class DataAll {
+public class DataAll implements Serializable {
     private ArrayList<Gora> gore;
     private ArrayList<User> uporabniki;
     private ArrayList<ShraniPot> shranjenaPot;

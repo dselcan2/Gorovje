@@ -1,12 +1,13 @@
 package com.example;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Denis on 4. 06. 2017.
  */
 
-public class Tocka {
+public class Tocka implements Serializable {
     Point tocka;
     double dolzina;
     double povprecnaHitrost;

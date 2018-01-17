@@ -24,7 +24,7 @@ public class CalculetedPoti extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new PotAdapter(am.poti);
+        mAdapter = new PotAdapter(am.poti, am);
         recyclerView.setAdapter(mAdapter);
         int cajt = am.totalTime;
         int hour = cajt/60;
