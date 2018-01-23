@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Environment;
-import android.support.v4.content.res.TypedArrayUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,20 +19,20 @@ import com.example.Pot;
 import com.example.ShraniPot;
 import com.thoughtworks.xstream.XStream;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
+
+import weka.classifiers.trees.J48;
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils;
 
 public class LoadingActivity extends AppCompatActivity {
     ImageView slika;
@@ -269,9 +268,10 @@ public class LoadingActivity extends AppCompatActivity {
             });
             gora = ApplicationJsonGore.load(file);
             am.gore = new ArrayList<Gora>(Arrays.asList(gora));
-            isDone = true;
+
             //Generacija ARFF datoteke
-            String arff = "";
+            /*String arff = "";
+            String arff2 = "";
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -283,9 +283,21 @@ public class LoadingActivity extends AppCompatActivity {
                     "@attribute tezavnost {\"lahko\", \"zahtevno\", \"zelo zahtevno\"}\n" +
                     "@attribute visina {\"nizko\", \"visoko\", \"zelo visoko\"}\n" +
                     "@attribute gorovje {\"julijske alpe\", \"kamnisko savinjske alpe\", \"karavanke\", \"pohorje\", \"sneznik\", \"skofjelosko hribovje\", \"vzhodnoslovensko hribovje\"}\n" +
-                    "@attribute ocenaUporabnika {\"0\", \"1\", \"2\", \"3\", \"4\", \"5\"}\n" +
+                    "@attribute ocenaUporabnika {\"1\", \"2\", \"3\", \"4\", \"5\"}\n" +
                     "\n" +
                     "@data\n";
+
+            arff2 += "@relation Poti\n" +
+                    "@attribute cas {\"kratko\", \"dolgo\", \"zelo dolgo\"}\n" +
+                    "@attribute tezavnost {\"lahko\", \"zahtevno\", \"zelo zahtevno\"}\n" +
+                    "@attribute visina {\"nizko\", \"visoko\", \"zelo visoko\"}\n" +
+                    "@attribute gorovje {\"julijske alpe\", \"kamnisko savinjske alpe\", \"karavanke\", \"pohorje\", \"sneznik\", \"skofjelosko hribovje\", \"vzhodnoslovensko hribovje\"}\n" +
+                    "@attribute ocenaUporabnika {\"1\", \"2\", \"3\", \"4\", \"5\"}\n" +
+                    "\n" +
+                    "@data\n";
+
+            int datacounter = 0;
+            int occ = 1;
             for(int i=0; i<gora.length; i++){
                 for(int j=0; j<gora[i].getZacetki().size(); j++){
                     String cas = gora[i].getZacetki().get(j).getCas();
@@ -322,11 +334,24 @@ public class LoadingActivity extends AppCompatActivity {
                     if(gora[i].getZacetki().get(j).getOcena() == null){
                         gora[i].getZacetki().get(j).setOcena("0");
                     }
-                    arff += "\"" + Acas + "\"" + "," + "\"" + tezavnost + "\"" + "," +
-                            "\"" +visina + "\"" + "," + "\"" + gora[i].getGorovje() + "\"" +","+ gora[i].getZacetki().get(j).getOcena()+ "\n";
+                    Random r = new Random();
+                    if(i % 5 == 0  && j == 0){
+                        arff += "\"" + Acas + "\"" + "," + "\"" + tezavnost + "\"" + "," +
+                                "\"" +visina + "\"" + "," + "\"" + gora[i].getGorovje() + "\"" +","+ occ + "\n";
+                        datacounter++;
+                        occ++;
+                        if(occ >= 6){
+                            occ = 1;
+                        }
+                    }
+                    else{
+                        arff2 += "\"" + Acas + "\"" + "," + "\"" + tezavnost + "\"" + "," +
+                                "\"" +visina + "\"" + "," + "\"" + gora[i].getGorovje() + "\"" +",?\n";
+                    }
                 }
             }
-            File myFile = new File(Environment.getExternalStorageDirectory().toString()+ "/Poti.arff");
+            Log.d("num podatki", "" + datacounter);
+            File myFile = new File(Environment.getExternalStorageDirectory().toString()+ "/train.arff");
             try {
                 myFile.createNewFile();
                 FileOutputStream fOut = new FileOutputStream(myFile);
@@ -335,11 +360,149 @@ public class LoadingActivity extends AppCompatActivity {
                 myOutWriter.append(arff);
                 myOutWriter.close();
                 fOut.close();
-                Log.d("FILE", "file saved to: " + Environment.getExternalStorageDirectory().toString()+ "/Poti.arff");
+                Log.d("FILE", "file saved to: " + Environment.getExternalStorageDirectory().toString()+ "/train.arff");
 
             } catch (Exception e) {
-
             }
+
+            File myFile2 = new File(Environment.getExternalStorageDirectory().toString()+ "/test.arff");
+            try {
+                myFile2.createNewFile();
+                FileOutputStream fOut = new FileOutputStream(myFile2);
+                OutputStreamWriter myOutWriter =
+                        new OutputStreamWriter(fOut);
+                myOutWriter.append(arff2);
+                myOutWriter.close();
+                fOut.close();
+                Log.d("FILE", "file saved to: " + Environment.getExternalStorageDirectory().toString()+ "/test.arff");
+
+            } catch (Exception e) {
+            }*/
+            try {
+                ConverterUtils.DataSource source1 = new ConverterUtils.DataSource(Environment.getExternalStorageDirectory().toString()+ "/train.arff");
+                Instances train = source1.getDataSet();
+                if(train.classIndex() != train.numAttributes()-1){
+                    train.setClassIndex(train.numAttributes() - 1);
+                }
+
+                ConverterUtils.DataSource source2 = new ConverterUtils.DataSource(Environment.getExternalStorageDirectory().toString()+ "/test.arff");
+                Instances test = source2.getDataSet();
+                // setting class attribute if the data format does not provide this information
+                // For example, the XRFF format saves the class attribute information as well
+                if (test.classIndex() != test.numAttributes()-1){
+                    test.setClassIndex(train.numAttributes() - 1);
+                }
+                J48 j84 = new J48();
+                j84.buildClassifier(train);
+
+                for(int i=0; i<test.numInstances(); i++){
+                    double label = j84.classifyInstance(test.instance(i));
+                    test.instance(i).setClassValue(label);
+                    //Log.d("WEKA:", test.instance(i).stringValue(4));
+                    if(test.instance(i).stringValue(4).equals("5")){
+                        Log.d("WEKA", test.instance(i).stringValue(0) + " " + test.instance(i).stringValue(1) + " " +test.instance(i).stringValue(2) + " " +test.instance(i).stringValue(3) + ": " + test.instance(i).stringValue(4));
+                    }
+                }
+                Random rnd = new Random();
+                int num = rnd.nextInt(test.numInstances());
+                int mincas = 0;
+                int maxcas = 0;
+                if(test.instance(num).stringValue(0).equals("kratko")){
+                    maxcas = 1;
+                }
+                else if(test.instance(num).stringValue(0).equals("dolgo")){
+                    mincas = 1;
+                    maxcas = 3;
+                }
+                else{
+                    mincas = 3;
+                    maxcas = 20;
+                }
+                String tezavnost = "";
+                if(test.instance(num).stringValue(1).equals("lahko")){
+                    tezavnost = "lahka";
+                }
+                else if(test.instance(num).stringValue(1).equals("zelo zahtevno")){
+                    tezavnost = "zelo zahtev";
+                }
+                else{
+                    tezavnost = "zahtev";
+                }
+                int minvisina = 0;
+                int maxvisina = 0;
+                if(test.instance(num).stringValue(2).equals("nizko")){
+                    maxvisina = 1000;
+                }
+                else if(test.instance(num).stringValue(2).equals("visoko")){
+                    minvisina = 1000;
+                    maxvisina = 2000;
+                }
+                else{
+                    minvisina = 2000;
+                    maxvisina = 5000;
+                }
+                String gorovje = test.instance(num).stringValue(3);
+                ArrayList<Pot> poti = new ArrayList<>();
+                for(int i=0; i<gora.length; i++) {
+                    for (int j = 0; j < gora[i].getZacetki().size(); j++) {
+                        String cas = gora[i].getZacetki().get(j).getCas();
+                        if(Integer.parseInt(cas.substring(0,1))<maxcas && Integer.parseInt(cas.substring(0,1))>mincas){
+
+                        }
+                        else {
+                            continue;
+                        }
+                        if(tezavnost.equals("zahtev")){
+                            if(gora[i].getZacetki().get(j).getTezavnost().contains(tezavnost) && !gora[i].getZacetki().get(j).getTezavnost().contains("zelo")){
+
+                            }
+                            else{
+                                continue;
+                            }
+                        }
+                        else{
+                            if(gora[i].getZacetki().get(j).getTezavnost().contains(tezavnost)){
+
+                            }
+                            else{
+                                continue;
+                            }
+                        }
+                        if(gora[i].getVisina()>minvisina && gora[i].getVisina()<maxvisina){
+
+                        }
+                        else{
+                            continue;
+                        }
+                        if(!gora[i].getGorovje().equals(gorovje)){
+                            continue;
+                        }
+                        poti.add(gora[i].getZacetki().get(j));
+                        Log.d("ADDPOT", "dodal");
+                    }
+                }
+                am.poti = poti;
+                int time = 0;
+                for(int i=0; i<poti.size(); i++){
+                    Pot pot = poti.get(i);
+                    String Time = pot.getCas();
+                    String h = Time.split("h")[0];
+                    String min = "";
+                    int minute = 0;
+                    if(Time.contains("min")){
+                        min = Time.split("h")[1].replace("min", "");
+                        minute = Integer.parseInt(min);
+                    }
+                    minute += Integer.parseInt(h)*60;
+
+                    time += minute;
+                }
+                am.totalTime = time;
+                Log.d("FINALADD", "done");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            isDone = true;
         }
     };
 

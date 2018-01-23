@@ -258,22 +258,30 @@ public class TabbedActivity extends AppCompatActivity {
             int Minute = 15;
             @Override
             public void onClick(View v) {
-                /*TimePickerDialog mDatePicker;
-                mDatePicker = new TimePickerDialog(TabbedActivity.this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        hour = hourOfDay;
-                        Minute = minute;
-                        Evolution(hour,minute);
-                    }
-                }, hour, Minute, true
-                );
-                mDatePicker.setTitle("Select Time");
-                mDatePicker.show();
-                */
                 NumPick();
             }
         });
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        Intent intent = new Intent(getApplicationContext(), CalculetedPoti.class);
+                        startActivity(intent);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+        if(am.prvic){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Ali želite predloge novih poti?").setPositiveButton("DA", dialogClickListener)
+                    .setNegativeButton("NE", dialogClickListener).show();
+            am.prvic = false;
+        }
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());

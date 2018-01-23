@@ -106,7 +106,7 @@ public class AdapterPot extends RecyclerView.Adapter<AdapterPot.ViewHolder> {
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder;
                 builder = new AlertDialog.Builder(context);
-                builder.setTitle("Zbriši vnos?").setMessage("Ali ste prepričani, da želita zbrisati pot?").setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                builder.setTitle("Zbriši vnos?").setMessage("Ali ste prepričani, da želite zbrisati pot?").setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mDataset.remove(poz);

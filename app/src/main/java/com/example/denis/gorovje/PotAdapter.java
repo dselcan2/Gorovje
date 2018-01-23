@@ -221,7 +221,10 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
                         else{
                             Pot pot = new Pot(mDataset.get(position));
                             pot.setOcena(""+(position2));
-                            mDataset.set(position, pot);
+                            if(!pot.getOcena().equals(mDataset.get(position).getOcena())){
+                                mDataset.set(position, pot);
+                                runing = true;
+                            }
                             if(position2 == 0){
                                 Irating.setImageResource(R.drawable.rating_not_rated);
                             }
@@ -240,7 +243,6 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.ViewHolder> {
                             else if(position2 == 5){
                                 Irating.setImageResource(R.drawable.rating_5);
                             }
-                            runing = true;
                         }
                         /*File file = new File(context.getExternalFilesDir("goremap"), "gore.json");
                         Collections.sort(am.gore, new Comparator<Gora>() {
