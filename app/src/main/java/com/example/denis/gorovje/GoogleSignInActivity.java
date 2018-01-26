@@ -84,7 +84,7 @@ public class GoogleSignInActivity extends AppCompatActivity {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             am.userEmail = acct.getEmail();
-            Intent intent = new Intent(this, TabbedActivity.class);
+            Intent intent = new Intent(context, AnimationActivity.class);
             startActivity(intent);
         } else {
             // Signed out, show unauthenticated UI.

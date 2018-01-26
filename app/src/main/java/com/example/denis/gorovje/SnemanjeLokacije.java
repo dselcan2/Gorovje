@@ -1,6 +1,7 @@
 package com.example.denis.gorovje;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.IntentService;
 import android.app.Service;
@@ -13,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -63,11 +65,15 @@ public class SnemanjeLokacije extends AppCompatActivity {
     String LatestTime;
     String LatestLen;
 
+    String name;
+
     SnemanjeLokacijeService mService;
     boolean connected = false;
 
     private static final String DATA_MAP = "potidatamap";
     private static final String FILE_NAME = "poti.json";
+
+    private static final int CAMERA_REQUEST = 1888;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +83,9 @@ public class SnemanjeLokacije extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
+        }
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 59);
         }
         context = this;
         speed = (TextView) findViewById(R.id.textView3);
@@ -88,6 +97,7 @@ public class SnemanjeLokacije extends AppCompatActivity {
             Intent intent = new Intent(this, SnemanjeLokacijeService.class);
             bindService(intent, mConnection, BIND_AUTO_CREATE);
         }
+        name = "";
         t.start();
         /*visinskizacetek = 0;
         prehojenadolzina = 0;
@@ -177,7 +187,6 @@ public class SnemanjeLokacije extends AppCompatActivity {
             prehojenadolzina = mService.prehojenadolzina;
             time = mService.time;
             if(mService.pot.size() > 0){
-                final CharSequence[] items = {" Sprehod "," Pohod "};
                 ime = "";
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("vnesite ime poti");
@@ -189,6 +198,7 @@ public class SnemanjeLokacije extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ime = input.getText().toString();
+                        name = ime;
                         shraniPot = new ShraniPot(new ArrayList<>(mService.pot), LatestTime, prehojenadolzina, ime);
                         Log.d("err:", LatestTime + " " + prehojenadolzina + " " + ime + " " + mService.pot.get(0).getDolzina() + " "
                                 + mService.pot.get(0).getPovprecnaHitrost());
@@ -205,7 +215,26 @@ public class SnemanjeLokacije extends AppCompatActivity {
                         mService.pot.clear();
                     }
                 });
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+                builder2.setMessage("Ali želite posneti sliko?").setPositiveButton("DA", dialogClickListener)
+                        .setNegativeButton("NE", dialogClickListener).show();
                 builder.show();
+
             }
             else{
                 Toast.makeText(this,"nisem zaznal nobene poti", Toast.LENGTH_SHORT).show();
@@ -293,4 +322,39 @@ public class SnemanjeLokacije extends AppCompatActivity {
             am.snemam = false;
         }
     };
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            Toast.makeText(this, "height: " + photo.getHeight() + " width: " + photo.getWidth(), Toast.LENGTH_SHORT).show();
+            int width = photo.getWidth();
+            int Wpadding = 0;
+            int height = photo.getHeight();
+            int Hpadding = 0;
+            boolean swap = false;
+            if(height < width){
+                int tmp = height;
+                height = width;
+                width = tmp;
+                swap = true;
+            }
+            if(width % 8 != 0){
+                Wpadding = (width%8)/2;
+                width = width - (width%8);
+            }
+            if(height != width){
+                Hpadding = (height-width)/2;
+                height = width;
+            }
+            final Bitmap newBmp;
+            if(!swap){
+                newBmp = Bitmap.createBitmap(photo, Wpadding, Hpadding, width, height);
+            }
+            else{
+                newBmp = Bitmap.createBitmap(photo, Hpadding, Wpadding, height, width);
+            }
+            DCTcompressor.encode(newBmp, name);
+        }
+    }
+
 }

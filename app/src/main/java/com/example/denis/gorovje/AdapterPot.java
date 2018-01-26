@@ -3,9 +3,12 @@ package com.example.denis.gorovje;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,9 @@ import com.example.Point;
 import com.example.ShraniPot;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -83,7 +89,7 @@ public class AdapterPot extends RecyclerView.Adapter<AdapterPot.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final int poz = position;
         holder.itemView.setLongClickable(true);
         holder.txtHeader.setText(mDataset.get(position).getIme());
@@ -92,6 +98,17 @@ public class AdapterPot extends RecyclerView.Adapter<AdapterPot.ViewHolder> {
         }
         else{
             holder.img.setImageResource(R.drawable.pot);
+        }
+        try {
+            FileInputStream fis = new FileInputStream(new File(Environment.getExternalStorageDirectory().toString()+ "/" + mDataset.get(poz).getIme() + ".bin"));
+            byte[] buffer = new byte[(int)fis.getChannel().size()];
+            fis.read(buffer);
+            Bitmap bmp = DCTcompressor.decode(buffer);
+            holder.img.setImageBitmap(bmp);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         holder.CL.setOnClickListener(new View.OnClickListener() {
             @Override
